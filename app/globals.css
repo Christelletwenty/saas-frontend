@@ -10,8 +10,7 @@
 /* Layout global 2 colonnes */
 .login {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1.2fr; /* droite un peu plus large */
+  display: flex;
   background: #fff;
   font-family:
     system-ui,
@@ -27,16 +26,20 @@
 /* Colonne gauche */
 .login__left {
   position: relative;
-  padding: 56px 64px;
+  padding: 80px 64px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 562px;
+  flex: 0 0 auto;
 }
 
 /* Logo en haut */
 .login__logo {
-  width: 170px;
-  height: auto;
+  /* width: 170px; */
+  height: 32px;
+  /* height: auto; */
+  width: auto;
 }
 
 .login__form__container {
@@ -160,6 +163,7 @@
 .login__right {
   min-height: 100vh;
   overflow: hidden;
+  flex: 1 1 auto;
 }
 
 .login__sideImage {
