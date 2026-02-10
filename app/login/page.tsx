@@ -88,14 +88,18 @@ export default function LoginPage() {
 
         <p className="login__footer">
           Pas encore de compte ?{" "}
-          <a className="login__link" href="#">
+          <a className="login__link" href="/register">
             Créer un compte
           </a>
         </p>
       </div>
 
       <div className="login__right">
-        <img className="login__sideImage" src="login-side.jpg" alt="" />
+        <img
+          className="login__sideImage"
+          src="login-side.jpg"
+          alt="login-logo"
+        />
       </div>
     </div>
   );

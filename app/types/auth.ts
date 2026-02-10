@@ -3,6 +3,12 @@ export type LoginPayload = {
   password: string;
 };
 
+export type RegisterPayload = {
+  email: string;
+  password: string;
+  name: string;
+};
+
 export type User = {
   id: number;
   email: string;
@@ -12,6 +18,12 @@ export type User = {
 export type LoginResponse = {
   token: string;
   user?: User;
+};
+
+export type RegisterResponse = {
+  token?: string;
+  user?: User;
+  message?: string;
 };
 
 export type ProfileResponse = {

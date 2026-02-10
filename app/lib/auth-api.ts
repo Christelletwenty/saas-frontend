@@ -1,8 +1,21 @@
-import { LoginPayload, LoginResponse, ProfileResponse } from "../types/auth";
+import {
+  LoginPayload,
+  LoginResponse,
+  ProfileResponse,
+  RegisterPayload,
+  RegisterResponse,
+} from "../types/auth";
 import { apiFetch } from "./api";
 
 export function login(payload: LoginPayload): Promise<LoginResponse> {
   return apiFetch<LoginResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function register(payload: RegisterPayload): Promise<RegisterResponse> {
+  return apiFetch<RegisterResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(payload),
   });
