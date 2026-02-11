@@ -1,0 +1,70 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 34px 38px;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 6px 0 26px;
+  color: var(--muted);
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+  max-width: 980px;
+}
+
+.label {
+  display: grid;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.input {
+  height: 46px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 0 14px;
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+}
+
+.input:focus {
+  border-color: rgba(211, 89, 11, 0.55);
+  box-shadow: 0 0 0 4px rgba(211, 89, 11, 0.12);
+}
+
+.actions {
+  margin-top: 8px;
+}
+
+.button {
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 10px;
+  border: none;
+  background: #111;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

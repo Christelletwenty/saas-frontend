@@ -5,6 +5,14 @@ type ApiErrorBody = {
   message?: string;
 };
 
+export class HttpError extends Error {
+  public readonly status: number;
+
+  constructor(status: number, message: string) {
+    (super(message), (this.status = status));
+  }
+}
+
 export async function apiFetch<T>(
   path: string,
   options: RequestInit & { auth?: boolean } = {},
@@ -16,7 +24,7 @@ export async function apiFetch<T>(
   if (options.auth) {
     const token = getToken();
     if (!token) {
-      throw new Error("Vous n'êtes pas authentifié");
+      throw new HttpError(401, "Non authentifié.");
     }
     headers.set("Authorization", `Bearer ${token}`);
   }
@@ -36,7 +44,7 @@ export async function apiFetch<T>(
     } catch {
       //backend renvoie du texte ou non
     }
-    throw new Error(message);
+    throw new HttpError(res.status, message);
   }
-  return (await res.json()).data as T;
+  return (await res.json()) as T;
 }

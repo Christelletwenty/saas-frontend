@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { LoginPayload } from "../types/auth";
+import { LoginPayload } from "../../types/auth";
 import { useState } from "react";
-import { login } from "../lib/auth-api";
-import { setToken } from "../lib/auth";
+import { login } from "../../lib/auth-api";
+import { setToken } from "../../lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,11 +17,14 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const data = await login(form);
-      if (!data.token) {
-        setError("Répons invalide du server");
+      const loginResponse = await login(form);
+
+      if (!loginResponse.success) {
+        setError(loginResponse.message ?? "Une erreur est survenue !");
         return;
       }
+
+      const data = loginResponse.data;
 
       setToken(data.token);
       router.replace("/");

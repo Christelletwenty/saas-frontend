@@ -1,9 +1,14 @@
+import { METHODS } from "http";
 import {
   LoginPayload,
   LoginResponse,
   ProfileResponse,
   RegisterPayload,
   RegisterResponse,
+  UpdatePasswordPayload,
+  UpdatePasswordResponse,
+  UpdateProfilePayload,
+  UpdateProfileResponse,
 } from "../types/auth";
 import { apiFetch } from "./api";
 
@@ -25,5 +30,25 @@ export function getProfile(): Promise<ProfileResponse> {
   return apiFetch<ProfileResponse>("/auth/profile", {
     method: "GET",
     auth: true,
+  });
+}
+
+export function updateProfile(
+  payload: UpdateProfilePayload,
+): Promise<UpdateProfileResponse> {
+  return apiFetch<UpdateProfileResponse>("/auth/profile", {
+    method: "PUT",
+    auth: true,
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updatePassword(
+  payload: UpdatePasswordPayload,
+): Promise<UpdatePasswordResponse> {
+  return apiFetch<UpdatePasswordResponse>("/auth/password", {
+    method: "PUT",
+    auth: true,
+    body: JSON.stringify(payload),
   });
 }

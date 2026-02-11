@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { RegisterPayload } from "../types/auth";
+import { RegisterPayload } from "../../types/auth";
 import { useState } from "react";
-import { setToken } from "../lib/auth";
-import { login, register } from "../lib/auth-api";
+import { setToken } from "../../lib/auth";
+import { login, register } from "../../lib/auth-api";
+import { HttpError } from "../../lib/api";
 
 type RegisterFormState = RegisterPayload & {
   confirmPassword: string;
@@ -36,11 +37,18 @@ export default function RegisterPage() {
     try {
       const { confirmPassword, ...payload } = form;
       //On register
-      const regRes = await register(payload);
+      const regResponse = await register(payload);
+
+      if (!regResponse.success) {
+        setError(regResponse.message ?? "Une erreur est survenue");
+        return;
+      }
+
+      const data = regResponse.data;
 
       //Le backend renvoie un token = on est register
-      if (regRes.token) {
-        setToken(regRes.token);
+      if (data.token) {
+        setToken(data.token);
         router.replace("/");
         router.refresh();
         return;
@@ -50,15 +58,30 @@ export default function RegisterPage() {
         email: payload.email,
         password: payload.password,
       });
-      if (loginResp.token) {
+
+      // Dans les faits ça devrait jamais arriver mais sait-on jamais
+      if (!loginResp.success || !loginResp.data.token) {
         setError("Compte créé, mais connexion impossible (token manquant).");
         return;
       }
 
-      setToken(loginResp.token);
+      setToken(loginResp.data.token);
       router.replace("/");
       router.refresh();
     } catch (err) {
+      if (err instanceof HttpError) {
+        if (err.status === 409) {
+          setError("Cet email est déjà utilisé");
+          return;
+        }
+        if (err.status === 400) {
+          setError(err.message || "Données invalides");
+          return;
+        }
+        setError(err.message || "Une erreur est survenue");
+        return;
+      }
+
       const message = err instanceof Error ? err.message : "Erreur inconnue";
       setError(message);
     } finally {
