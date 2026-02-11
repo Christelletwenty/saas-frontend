@@ -4,23 +4,33 @@ import styles from "./AppHeader.module.css";
 
 function IconGrid() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"
-      />
-    </svg>
+    <Image
+      src="/dashboard-icon.svg"
+      alt="Dashboard"
+      width={20}
+      height={20}
+      priority
+    ></Image>
   );
 }
 
 function IconFolder() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M10 4l2 2h8a2 2 0 0 1 2 2v10a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a2 2 0 0 1 2-2h6z"
-      />
-    </svg>
+    <Image
+      src="/folder-icon.svg"
+      alt="Folder"
+      width={20}
+      height={20}
+      priority
+    ></Image>
+  );
+}
+
+function Account() {
+  return (
+    <div className={styles.profileLogo}>
+      <p>moi</p>
+    </div>
   );
 }
 
@@ -54,8 +64,8 @@ export default function AppHeader() {
           </Link>
         </nav>
 
-        <Link href="/profile" className={styles.avatar} aria-label="Mon compte">
-          AD
+        <Link href="/profile" className={styles.navItem}>
+          <Account />
         </Link>
       </div>
     </header>

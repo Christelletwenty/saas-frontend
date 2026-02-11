@@ -7,7 +7,7 @@
 }
 
 .inner {
-  height: 72px;
+  height: 100px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
@@ -32,13 +32,24 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: var(--brand);
+  color: #d3590b;
   font-weight: 500;
 }
 
 .navIcon {
   display: inline-flex;
   color: var(--brand);
+}
+
+.profileLogo {
+  color: #ffffff;
+  background-color: #d3590b;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .avatar {
