@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { clearToken, getToken } from "../../lib/auth";
 import { getProfile, updatePassword, updateProfile } from "../../lib/auth-api";
 import styles from "./profile.module.css";
+import Image from "next/image";
 
 type FormState = {
   name: string;
@@ -177,9 +178,18 @@ export default function ProfilePage() {
   return (
     <div className={styles.page}>
       <section className={styles.card}>
-        <h1 className={styles.title}>Mon compte</h1>
+        <h1 className={styles.title}>
+          <span>Mon compte</span>
+          <Image
+            src="/logout.svg"
+            alt="Se déconnecter"
+            width={20}
+            height={20}
+            priority
+            onClick={logout}
+          ></Image>
+        </h1>
         <p className={styles.subtitle}>{user?.name ?? "—"}</p>
-        <button onClick={logout}>Se déconnecter</button>
 
         <form onSubmit={onSubmit} className={styles.form}>
           <label className={styles.label}>

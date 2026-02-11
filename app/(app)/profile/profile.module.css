@@ -15,7 +15,11 @@
   margin: 0;
   font-size: 22px;
   font-weight: 700;
+  display: flex;
+  gap: 10px;
 }
+
+/* .title image {} */
 
 .subtitle {
   margin: 6px 0 26px;
