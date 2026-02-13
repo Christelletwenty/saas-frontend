@@ -1,4 +1,3 @@
-import { METHODS } from "http";
 import {
   LoginPayload,
   LoginResponse,

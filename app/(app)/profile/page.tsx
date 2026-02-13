@@ -1,12 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { User } from "../../types/auth";
 import { useEffect, useMemo, useState } from "react";
-import { clearToken, getToken } from "../../lib/auth";
-import { getProfile, updatePassword, updateProfile } from "../../lib/auth-api";
-import styles from "./profile.module.css";
 import Image from "next/image";
+import styles from "./profile.module.css";
+
+import type { User } from "@/app/types/auth";
+import { clearToken } from "@/app/lib/auth";
+import { getProfile, updatePassword, updateProfile } from "@/app/lib/auth-api";
 
 type FormState = {
   name: string;
@@ -18,9 +18,8 @@ type FormState = {
 };
 
 export default function ProfilePage() {
-  const router = useRouter();
-
   const [user, setUser] = useState<User | null>(null);
+
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
@@ -35,27 +34,8 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const profileChanged = useMemo(() => {
-    if (!user) return false;
-    const nameChanged = (form.name ?? "") !== (user.name ?? "");
-    const emailChanged = form.email !== user.email;
-    return nameChanged || emailChanged;
-  }, [form.name, form.email, user]);
-
-  const passwordSectionTouched = useMemo(() => {
-    return Boolean(
-      form.currentPassword || form.newPassword || form.confirmNewPassword,
-    );
-  }, [form.currentPassword, form.newPassword, form.confirmNewPassword]);
-
-  // Guard + load profile
+  // redirect : AuthGate vérifie le token
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
-
     (async () => {
       try {
         setLoading(true);
@@ -69,13 +49,26 @@ export default function ProfilePage() {
           email: u.email,
         }));
       } catch {
+        // si jamais ça arrive (token invalide), AuthGate va aussi redirect
         clearToken();
-        router.replace("/login");
       } finally {
         setLoading(false);
       }
     })();
-  }, [router]);
+  }, []);
+
+  const profileChanged = useMemo(() => {
+    if (!user) return false;
+    const nameChanged = (form.name ?? "") !== (user.name ?? "");
+    const emailChanged = form.email !== user.email;
+    return nameChanged || emailChanged;
+  }, [form.name, form.email, user]);
+
+  const passwordSectionTouched = useMemo(() => {
+    return Boolean(
+      form.currentPassword || form.newPassword || form.confirmNewPassword,
+    );
+  }, [form.currentPassword, form.newPassword, form.confirmNewPassword]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -84,7 +77,6 @@ export default function ProfilePage() {
 
     if (!user) return;
 
-    // Validation password (si section utilisée)
     if (passwordSectionTouched) {
       if (
         !form.currentPassword ||
@@ -100,7 +92,6 @@ export default function ProfilePage() {
       }
     }
 
-    // Si rien à sauver, on ne spam pas l’API
     if (!profileChanged && !passwordSectionTouched) {
       setMessage("Aucune modification à enregistrer.");
       return;
@@ -108,7 +99,6 @@ export default function ProfilePage() {
 
     setSaving(true);
     try {
-      // On exécute 1 ou 2 requêtes selon ce qui a changé
       let profileMsg: string | null = null;
       let passwordMsg: string | null = null;
 
@@ -121,7 +111,6 @@ export default function ProfilePage() {
         const updated = res.data.user;
         setUser(updated);
 
-        // on resynchronise le form avec ce que renvoie le backend
         setForm((f) => ({
           ...f,
           name: updated.name ?? "",
@@ -137,7 +126,6 @@ export default function ProfilePage() {
           newPassword: form.newPassword,
         });
 
-        // reset champs password après succès
         setForm((f) => ({
           ...f,
           currentPassword: "",
@@ -148,7 +136,6 @@ export default function ProfilePage() {
         passwordMsg = res.message ?? "Mot de passe mis à jour.";
       }
 
-      // Message final propre
       const finalMsg = [profileMsg, passwordMsg].filter(Boolean).join(" • ");
       setMessage(finalMsg || "Modifications enregistrées.");
     } catch (err) {
@@ -161,14 +148,14 @@ export default function ProfilePage() {
 
   function logout() {
     clearToken();
-    router.replace("/login");
+    window.location.href = "/login";
   }
 
   if (loading) {
     return (
       <main>
         <h1>Mon compte</h1>
-        <p>{user?.name}</p>
+        <p>Chargement...</p>
       </main>
     );
   }
@@ -187,9 +174,11 @@ export default function ProfilePage() {
             height={20}
             priority
             onClick={logout}
-          ></Image>
+            style={{ cursor: "pointer" }}
+          />
         </h1>
-        <p className={styles.subtitle}>{user?.name ?? "—"}</p>
+
+        <p className={styles.subtitle}>{user.name ?? "—"}</p>
 
         <form onSubmit={onSubmit} className={styles.form}>
           <label className={styles.label}>
@@ -250,6 +239,13 @@ export default function ProfilePage() {
               }
             />
           </label>
+
+          {error ? (
+            <p style={{ color: "crimson", margin: 0 }}>{error}</p>
+          ) : null}
+          {message ? (
+            <p style={{ color: "green", margin: 0 }}>{message}</p>
+          ) : null}
 
           <div className={styles.actions}>
             <button className={styles.button} type="submit" disabled={saving}>
