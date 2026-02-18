@@ -10,7 +10,7 @@
   height: 100px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -26,14 +26,37 @@
   display: flex;
   align-items: center;
   gap: 36px;
+  align-self: stretch;
 }
 
 .navItem {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   color: #d3590b;
   font-weight: 500;
+  width: 248px;
+  border-radius: 10px;
+  height: 100%;
+}
+
+.navItem svg {
+  fill: #d3590b;
+  width: 18px;
+}
+
+.navItem.account {
+  width: auto;
+}
+
+.navItem.active {
+  background-color: #0f0f0f;
+  color: #fff;
+}
+
+.navItem.active svg {
+  fill: #fff;
 }
 
 .navIcon {
@@ -42,8 +65,8 @@
 }
 
 .profileLogo {
-  color: #ffffff;
-  background-color: #d3590b;
+  color: #0f0f0f;
+  background-color: #ffe8d9;
   border-radius: 50%;
   width: 65px;
   height: 65px;

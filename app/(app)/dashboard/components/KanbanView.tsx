@@ -16,6 +16,12 @@ export default function KanbanView({ tasks }: KanbanProps) {
       ) : (
         <>
           <div className={styles.list}>
+            <div className={styles.count}>
+              À faire{" "}
+              <div className={styles.totalCount}>
+                {tasks.filter((task) => task.status === "TODO").length}
+              </div>
+            </div>
             {tasks
               .filter((task) => task.status === "TODO")
               .map((task) => (
@@ -23,6 +29,12 @@ export default function KanbanView({ tasks }: KanbanProps) {
               ))}
           </div>
           <div className={styles.list}>
+            <div className={styles.count}>
+              En cours{" "}
+              <div className={styles.totalCount}>
+                {tasks.filter((task) => task.status === "IN_PROGRESS").length}
+              </div>
+            </div>
             {tasks
               .filter((task) => task.status === "IN_PROGRESS")
               .map((task) => (
@@ -30,6 +42,12 @@ export default function KanbanView({ tasks }: KanbanProps) {
               ))}
           </div>
           <div className={styles.list}>
+            <div className={styles.count}>
+              Terminées
+              <div className={styles.totalCount}>
+                {tasks.filter((task) => task.status === "DONE").length}
+              </div>
+            </div>
             {tasks
               .filter((task) => task.status === "DONE")
               .map((task) => (
