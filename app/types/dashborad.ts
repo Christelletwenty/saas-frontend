@@ -19,7 +19,7 @@ export type DashboardProject = {
 
 export type DashboardTask = {
   id: string;
-  name: string;
+  title: string;
   description: string;
   dueDate: string | null;
   priority: Priority;

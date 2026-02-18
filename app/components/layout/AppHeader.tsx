@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./AppHeader.module.css";
+import { useEffect, useState } from "react";
+import { User } from "@/app/types/auth";
+import { getProfile } from "@/app/lib/auth-api";
 
 function IconGrid() {
   return (
@@ -27,9 +32,37 @@ function IconFolder() {
 }
 
 function Account() {
+  const [userInitials, setUserInitials] = useState<string | null>(null);
+
+  /**
+   * Petit utilitaire pour récupérer des initiales a partir d'un nom
+   * @param userName le nom a split en initials
+   * @returns les initiales si on avait un nom séparé avec un espace
+   */
+  const getUserInitials = (userName: string): string => {
+    return userName
+      .split(" ")
+      .map((c) => c[0])
+      .join("");
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const userRes = await getProfile();
+        setUserInitials(getUserInitials(userRes.data.user.name ?? ""));
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Erreur inconnue";
+        console.error(msg);
+        setUserInitials("N/C");
+      } finally {
+      }
+    })();
+  }, []);
+
   return (
     <div className={styles.profileLogo}>
-      <p>moi</p>
+      <p>{userInitials}</p>
     </div>
   );
 }
