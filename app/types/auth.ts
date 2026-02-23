@@ -1,3 +1,5 @@
+import { ApiSuccess } from "../lib/api";
+
 export type LoginPayload = {
   email: string;
   password: string;
@@ -20,17 +22,11 @@ export type UpdatePasswordPayload = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   email: string;
   name?: string;
   createdAd: string;
   updatedAt: string;
-};
-
-export type ApiSuccess<TData> = {
-  success?: boolean;
-  message?: string;
-  data: TData;
 };
 
 export type ApiError = {

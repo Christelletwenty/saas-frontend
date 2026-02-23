@@ -1,3 +1,4 @@
+import { ApiSuccess } from "../lib/api";
 import { User } from "./auth";
 
 export type Priority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
@@ -26,13 +27,14 @@ export type DashboardTask = {
   status: TaskStatus;
   project: DashboardProject;
   comments: DashboardComment[];
+  assignees: {
+    id: string;
+    assignedAt: Date;
+    user: User;
+  }[];
 };
 
-export type ApiSuccess<TData> = {
-  succes?: boolean;
-  message?: string;
-  data: TData;
-};
+export type createDashboardTaskResponse = ApiSuccess<{ task: DashboardTask }>;
 
 export type AssignedTasksResponse = ApiSuccess<{ tasks: DashboardTask[] }>;
 

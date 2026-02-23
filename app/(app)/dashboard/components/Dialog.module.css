@@ -1,0 +1,220 @@
+.dialog {
+  width: min(860px, calc(100vw - 80px));
+  border: none;
+  border-radius: 18px;
+  padding: 0;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Backdrop */
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Container */
+.container {
+  position: relative;
+  padding: 56px 64px 52px;
+}
+
+/* Close button */
+.closeButton {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 26px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #111;
+}
+
+/* Title */
+.title {
+  margin: 0 0 36px;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+
+/* Form */
+.form {
+  display: grid;
+  gap: 18px;
+  max-width: 680px;
+}
+
+/* Label */
+.label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Input */
+.input {
+  width: 100%;
+  height: 54px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0 16px;
+  font-size: 16px;
+  outline: none;
+  background: #fff;
+}
+
+.input:focus {
+  border-color: rgba(211, 89, 11, 0.55);
+  box-shadow: 0 0 0 4px rgba(211, 89, 11, 0.12);
+}
+
+/* Select */
+.select {
+  width: 100%;
+  height: 54px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0 44px 0 16px;
+  font-size: 16px;
+  outline: none;
+  appearance: none;
+  background: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+.select:focus {
+  border-color: rgba(211, 89, 11, 0.55);
+  box-shadow: 0 0 0 4px rgba(211, 89, 11, 0.12);
+}
+
+/* Submit */
+.submitButton {
+  margin-top: 26px;
+  width: 280px;
+  height: 54px;
+  border-radius: 12px;
+  border: none;
+  background: #111;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitButton:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.statusGroup {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.statusPill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* cache le radio natif */
+.statusPill input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.statusPill span {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  line-height: 1;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #111827;
+  transition:
+    transform 0.05s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.statusPill:hover span {
+  border-color: #d1d5db;
+}
+
+.statusPill input:focus-visible + span {
+  outline: 2px solid #111827;
+  outline-offset: 2px;
+}
+
+.statusPill input:checked + span {
+  border-color: transparent;
+  transform: translateY(-1px);
+}
+
+/* couleurs par statut */
+.statusPill input[value="TODO"]:checked + span {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.statusPill input[value="IN_PROGRESS"]:checked + span {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.statusPill input[value="DONE"]:checked + span {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.help {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: -6px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .dialog {
+    width: calc(100vw - 24px);
+  }
+
+  .container {
+    padding: 44px 18px 28px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+}

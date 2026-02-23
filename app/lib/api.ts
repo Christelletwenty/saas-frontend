@@ -5,6 +5,12 @@ type ApiErrorBody = {
   message?: string;
 };
 
+export type ApiSuccess<TData> = {
+  success?: boolean;
+  message?: string;
+  data: TData;
+};
+
 export class HttpError extends Error {
   public readonly status: number;
 

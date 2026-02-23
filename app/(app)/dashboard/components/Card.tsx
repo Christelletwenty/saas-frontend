@@ -2,6 +2,8 @@
 
 import { DashboardTask } from "@/app/types/dashborad";
 import styles from "../dashboard.module.css";
+import TaskDialog from "./TaskDialog";
+import { useState } from "react";
 
 type TaskProps = {
   task: DashboardTask;
@@ -17,11 +19,13 @@ function formatDate(date: string | null): string {
   });
 }
 
-function viweDetail(taskId: string): void {
-  alert("Vous avez sélectionné la tache " + taskId);
-}
-
 export default function Card({ task }: TaskProps) {
+  const [modal, setModal] = useState(false);
+
+  function closeDialog(): void {
+    setModal(false);
+  }
+
   return (
     <article key={task.id} className={styles.taskRow}>
       <div className={styles.taskMain}>
@@ -65,14 +69,18 @@ export default function Card({ task }: TaskProps) {
             </span>
           </div>
 
-          <button
-            className={styles.viewButton}
-            onClick={() => viweDetail(task.id)}
-          >
+          <button className={styles.viewButton} onClick={() => setModal(true)}>
             Voir
           </button>
         </div>
       </div>
+
+      <TaskDialog
+        readonly
+        task={task}
+        openDialog={modal}
+        closeDialog={() => closeDialog()}
+      />
     </article>
   );
 }

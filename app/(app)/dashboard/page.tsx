@@ -4,10 +4,12 @@ import { getProfile } from "@/app/lib/auth-api";
 import { getAssignedTasks, getDashboardStats } from "@/app/lib/dashboard-api";
 import { User } from "@/app/types/auth";
 import { DashboardStats, DashboardTask } from "@/app/types/dashborad";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
 import ListView from "./components/ListView";
 import KanbanView from "./components/KanbanView";
+import CreateProjectDialog from "./components/CreateProjectDialog";
+import { Project } from "@/app/types/project";
 
 function priorityLabel(p: DashboardTask["priority"]): string {
   if (p === "URGENT") return "Urgent";
@@ -24,6 +26,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isListActive, setIsListActive] = useState<boolean>(true);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -49,6 +52,16 @@ export default function DashboardPage() {
     })();
   }, []);
 
+  function closeDialog(project?: Project) {
+    if (project) {
+      // TODO: Du coup on fait quoi de ça ?
+      // On liste les tâches pas les projets dans cet écran...
+      // Un toast peut être ?
+      // Ou alors rediriger sur les projets ?
+    }
+    setModal(false);
+  }
+
   if (loading) {
     return (
       <main className={styles.page}>
@@ -69,7 +82,13 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <button className={styles.primaryButton}>+ Créer un projet</button>
+        <button onClick={() => setModal(true)} className={styles.primaryButton}>
+          + Créer un projet
+        </button>
+        <CreateProjectDialog
+          openDialog={modal}
+          closeDialog={(p) => closeDialog(p)}
+        />
       </div>
 
       {/* VIEW SWITCH */}
