@@ -1,11 +1,11 @@
 "use client";
 
-import { DashboardTask } from "@/app/types/dashborad";
+import { Task } from "@/app/types/task";
 import styles from "../dashboard.module.css";
 import Card from "./Card";
 
 type KanbanProps = {
-  tasks: DashboardTask[];
+  tasks: Task[];
 };
 
 export default function KanbanView({ tasks }: KanbanProps) {

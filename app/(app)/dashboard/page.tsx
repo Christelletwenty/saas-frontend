@@ -3,15 +3,16 @@
 import { getProfile } from "@/app/lib/auth-api";
 import { getAssignedTasks, getDashboardStats } from "@/app/lib/dashboard-api";
 import { User } from "@/app/types/auth";
-import { DashboardStats, DashboardTask } from "@/app/types/dashborad";
+import { DashboardStats } from "@/app/types/dashborad";
 import { useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
 import ListView from "./components/ListView";
 import KanbanView from "./components/KanbanView";
 import CreateProjectDialog from "./components/CreateProjectDialog";
 import { Project } from "@/app/types/project";
+import { Task } from "@/app/types/task";
 
-function priorityLabel(p: DashboardTask["priority"]): string {
+function priorityLabel(p: Task["priority"]): string {
   if (p === "URGENT") return "Urgent";
   if (p === "HIGH") return "Haute";
   if (p === "MEDIUM") return "Moyenne";
@@ -21,7 +22,7 @@ function priorityLabel(p: DashboardTask["priority"]): string {
 
 export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
-  const [tasks, setTasks] = useState<DashboardTask[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

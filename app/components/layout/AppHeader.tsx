@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import DashboardIcon from "@/public/dashboard-icon.svg";
 import { usePathname } from "next/navigation";
 import styles from "./AppHeader.module.css";
 import { useEffect, useState } from "react";
-import { User } from "@/app/types/auth";
 import { getProfile } from "@/app/lib/auth-api";
 
 function IconGrid() {
@@ -117,7 +115,10 @@ export default function AppHeader() {
             <button>Tableau de bord</button>
           </Link>
 
-          <Link href="/projects" className={styles.navItem}>
+          <Link
+            href="/projects"
+            className={`${styles.navItem} ${pathname.includes("/projects") ? styles.active : ""}`}
+          >
             <span className={styles.navIcon}>
               <IconFolder />
             </span>

@@ -1,12 +1,12 @@
 "use client";
 
-import { DashboardTask } from "@/app/types/dashborad";
+import { Task } from "@/app/types/task";
 import styles from "../dashboard.module.css";
 import TaskDialog from "./TaskDialog";
 import { useState } from "react";
 
 type TaskProps = {
-  task: DashboardTask;
+  task: Task;
 };
 
 function formatDate(date: string | null): string {

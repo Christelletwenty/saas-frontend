@@ -1,15 +1,17 @@
-import { createDashboardTaskResponse, DashboardTask } from "../types/dashborad";
+import { CreateTaskResponse, Task } from "../types/task";
 import { apiFetch } from "./api";
 
 export function createOrUpdateTask(
-  payload: Partial<DashboardTask> & { assigneesIds?: string[] },
-): Promise<createDashboardTaskResponse> {
+  payload: Partial<Task> & { assigneesIds?: string[] },
+): Promise<CreateTaskResponse> {
   const method = payload.id ? "PUT" : "POST";
   const url = payload.id ? `/tasks/${payload.id}` : "/tasks";
 
-  return apiFetch<createDashboardTaskResponse>(url, {
+  return apiFetch<CreateTaskResponse>(url, {
     method: method,
     auth: true,
     body: JSON.stringify(payload),
   });
 }
+
+export function deleteTask(id: string) {}

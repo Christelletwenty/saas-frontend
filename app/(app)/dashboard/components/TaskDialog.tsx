@@ -1,13 +1,10 @@
 "use client";
 
-import { createProject } from "@/app/lib/project-api";
 import { use, useEffect, useRef, useState } from "react";
-import { CreateProjectBody, Project } from "@/app/types/project";
 
 import styles from "./Dialog.module.css";
-import { User } from "@/app/types/auth";
-import { DashboardTask, Priority, TaskStatus } from "@/app/types/dashborad";
 import { createOrUpdateTask } from "@/app/lib/task-api";
+import { Priority, Task, TaskStatus } from "@/app/types/task";
 
 type TaskFormState = {
   title: string;
@@ -19,7 +16,7 @@ type TaskFormState = {
 };
 
 function toDateInputValue(value: string | null | undefined) {
-  // si ton back renvoie déjà "YYYY-MM-DD", parfait.
+  // si mon back renvoie déjà "YYYY-MM-DD", parfait.
   // s'il renvoie un ISO, on convertit.
   if (!value) return "";
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
@@ -38,9 +35,9 @@ export default function TaskDialog({
   closeDialog,
   readonly,
 }: {
-  task: DashboardTask | null;
+  task: Task | null;
   openDialog: boolean;
-  closeDialog: () => void;
+  closeDialog: (task?: Task) => void;
   readonly?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
@@ -189,7 +186,7 @@ export default function TaskDialog({
               value={((form as any).assigneeIds ?? []) as string[]}
               onChange={handleAssigneesChange}
             >
-              {task?.assignees.map((c) => (
+              {task?.assignees?.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.user.name || c.user.email}
                 </option>

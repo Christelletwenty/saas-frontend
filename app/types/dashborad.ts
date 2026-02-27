@@ -1,42 +1,4 @@
 import { ApiSuccess } from "../lib/api";
-import { User } from "./auth";
-
-export type Priority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-
-export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE" | "CANCELLED";
-
-export type DashboardComment = {
-  id: string;
-  content: string;
-  createdAt: string;
-  author: User;
-};
-
-export type DashboardProject = {
-  id: string;
-  name: string;
-  description: string | null;
-};
-
-export type DashboardTask = {
-  id: string;
-  title: string;
-  description: string;
-  dueDate: string | null;
-  priority: Priority;
-  status: TaskStatus;
-  project: DashboardProject;
-  comments: DashboardComment[];
-  assignees: {
-    id: string;
-    assignedAt: Date;
-    user: User;
-  }[];
-};
-
-export type createDashboardTaskResponse = ApiSuccess<{ task: DashboardTask }>;
-
-export type AssignedTasksResponse = ApiSuccess<{ tasks: DashboardTask[] }>;
 
 export type DashboardStats = {
   tasks: {

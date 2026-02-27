@@ -1,8 +1,8 @@
 "use client";
 
 import { createProject } from "@/app/lib/project-api";
-import { use, useEffect, useRef, useState } from "react";
-import { CreateProjectBody, Project } from "@/app/types/project";
+import { useEffect, useRef, useState } from "react";
+import { Project } from "@/app/types/project";
 
 import styles from "./Dialog.module.css";
 
@@ -34,14 +34,12 @@ export default function CreateProjectDialog({
     setLoading(true);
     setError(null);
 
-    console.log({ name, description, contributors });
     try {
       const created = await createProject({
         name,
         description,
         contributors,
       });
-      console.log("Projet créé :", created);
 
       if (created.success) {
         closeDialog(created.data.project);
@@ -105,7 +103,7 @@ export default function CreateProjectDialog({
               type="submit"
               className={styles.submitButton}
               disabled={!name || !description || loading}
-              onClick={createProjectHandler}
+              onSubmit={createProjectHandler}
             >
               Ajouter un projet
             </button>

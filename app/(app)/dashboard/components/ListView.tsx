@@ -1,11 +1,11 @@
 "use client";
 import { useMemo, useState } from "react";
 import styles from "../dashboard.module.css";
-import { DashboardTask } from "@/app/types/dashborad";
 import Card from "./Card";
+import { Task } from "@/app/types/task";
 
 type TaskProps = {
-  tasks: DashboardTask[];
+  tasks: Task[];
 };
 
 export default function ListView({ tasks }: TaskProps) {

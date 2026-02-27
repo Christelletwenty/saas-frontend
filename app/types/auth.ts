@@ -29,12 +29,6 @@ export type User = {
   updatedAt: string;
 };
 
-export type ApiError = {
-  message: string;
-  code?: string;
-  errors?: Array<{ field?: string; message: string }>;
-};
-
 export type LoginResponse = ApiSuccess<{
   token: string;
   user?: User;
