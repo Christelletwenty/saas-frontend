@@ -1,5 +1,6 @@
 import {
   CreateProjectBody,
+  CreateProjectResponse,
   createProjectResponse,
   GetProjectResponse,
   GetProjectsResponse,
@@ -10,8 +11,18 @@ import { apiFetch } from "./api";
 export function createProject(
   payload: CreateProjectBody,
 ): Promise<createProjectResponse> {
-  return apiFetch<createProjectResponse>("/project", {
+  return apiFetch<createProjectResponse>("/projects", {
     method: "POST",
+    auth: true,
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updateProject(
+  payload: Project,
+): Promise<CreateProjectResponse> {
+  return apiFetch<createProjectResponse>(`/projects/${payload.id}`, {
+    method: "PUT",
     auth: true,
     body: JSON.stringify(payload),
   });

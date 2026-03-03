@@ -1,0 +1,28 @@
+.page {
+  min-height: 55vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendarPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  padding: 48px;
+  border-radius: 16px;
+}
+
+.calendarTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.calendarPanel img {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+}

@@ -296,6 +296,22 @@
   opacity: 0.7;
 }
 
+.empty {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding-top: 20px;
+}
+
+.empty img {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+}
+
 /* =========================
    TASK CARD
 ========================= */
@@ -373,6 +389,7 @@
 .statusTodo {
   background: #fde7d6;
   color: #ea6a11;
+  margin-left: 10px;
 }
 
 /* (optionnels si tu veux plus tard) */
@@ -443,4 +460,30 @@
   cursor: pointer;
   font-weight: 900;
   color: #6b7280;
+}
+
+/*
+* /////// MENU ///////
+*/
+
+.dropdownStyle {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 4px 0;
+  z-index: 100;
+}
+
+.menuItem {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
 }

@@ -4,6 +4,7 @@ import { Task } from "@/app/types/task";
 import styles from "../dashboard.module.css";
 import TaskDialog from "./TaskDialog";
 import { useState } from "react";
+import { Project } from "@/app/types/project";
 
 type TaskProps = {
   task: Task;
@@ -78,6 +79,7 @@ export default function Card({ task }: TaskProps) {
       <TaskDialog
         readonly
         task={task}
+        project={task.project ?? ({} as Project)}
         openDialog={modal}
         closeDialog={() => closeDialog()}
       />

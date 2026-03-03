@@ -61,10 +61,7 @@ export default function projectsPage() {
 
   function closeDialog(project?: Project) {
     if (project) {
-      // TODO: Du coup on fait quoi de ça ?
-      // On liste les tâches pas les projets dans cet écran...
-      // Un toast peut être ?
-      // Ou alors rediriger sur les projets ?
+      projects.push(project);
     }
     setModal(false);
   }

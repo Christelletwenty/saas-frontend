@@ -1,10 +1,11 @@
 "use client";
 
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./Dialog.module.css";
 import { createOrUpdateTask } from "@/app/lib/task-api";
 import { Priority, Task, TaskStatus } from "@/app/types/task";
+import { Project } from "@/app/types/project";
 
 type TaskFormState = {
   title: string;
@@ -15,26 +16,14 @@ type TaskFormState = {
   assigneeIds: string[];
 };
 
-function toDateInputValue(value: string | null | undefined) {
-  // si mon back renvoie déjà "YYYY-MM-DD", parfait.
-  // s'il renvoie un ISO, on convertit.
-  if (!value) return "";
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
-}
-
 export default function TaskDialog({
+  project,
   task,
   openDialog,
   closeDialog,
   readonly,
 }: {
+  project: Project;
   task: Task | null;
   openDialog: boolean;
   closeDialog: (task?: Task) => void;
@@ -42,6 +31,7 @@ export default function TaskDialog({
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
 
   const [form, setForm] = useState<TaskFormState>({
@@ -56,6 +46,7 @@ export default function TaskDialog({
   useEffect(() => {
     if (openDialog) {
       ref.current?.showModal();
+      setProjectId(project.id);
     } else {
       ref.current?.close();
     }
@@ -70,7 +61,9 @@ export default function TaskDialog({
       setForm({
         title: task.title ?? "",
         description: task.description ?? "",
-        dueDate: toDateInputValue(task.dueDate),
+        dueDate: new Intl.DateTimeFormat("fr-CA").format(
+          new Date(task.dueDate ?? ""),
+        ),
         priority: task.priority,
         status: task.status,
         assigneeIds: task.assignees?.map((a) => a.user.id) ?? [],
@@ -97,12 +90,22 @@ export default function TaskDialog({
     setLoading(true);
     setError(null);
 
+    if (!projectId) {
+      setError("Le projectId ne peut pas être null");
+      return;
+    }
+
+    const payload = {
+      ...form,
+      dueDate: new Date(form.dueDate).toISOString(),
+    };
+
     try {
-      const created = await createOrUpdateTask(form);
+      const created = await createOrUpdateTask(projectId, payload);
       console.log("Tâche créé :", created);
 
       if (created.success) {
-        closeDialog();
+        closeDialog(created.data.task);
       } else {
         setError(created.message || "Erreur lors de la création du projet");
       }
@@ -192,9 +195,6 @@ export default function TaskDialog({
                 </option>
               ))}
             </select>
-            <small className={styles.help}>
-              Astuce : Ctrl/Cmd + clic pour sélectionner plusieurs.
-            </small>
 
             {/* STATUS (RADIOS) */}
             <label className={styles.label}>Statut</label>

@@ -1,6 +1,6 @@
 "use client";
 
-import { createProject } from "@/app/lib/project-api";
+import { createProject, updateProject } from "@/app/lib/project-api";
 import { useEffect, useRef, useState } from "react";
 import { Project } from "@/app/types/project";
 
@@ -9,9 +9,11 @@ import styles from "./Dialog.module.css";
 export default function CreateProjectDialog({
   openDialog,
   closeDialog,
+  project,
 }: {
   openDialog: boolean;
   closeDialog: (project?: Project) => void;
+  project?: Project;
 }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -24,6 +26,11 @@ export default function CreateProjectDialog({
   useEffect(() => {
     if (openDialog) {
       ref.current?.showModal();
+      if (project) {
+        setName(project.name);
+        setDescription(project.description ?? "");
+        setContributors(project.members.map((m) => m.id));
+      }
     } else {
       ref.current?.close();
     }
@@ -35,17 +42,35 @@ export default function CreateProjectDialog({
     setError(null);
 
     try {
-      const created = await createProject({
-        name,
-        description,
-        contributors,
-      });
+      if (project) {
+        const updated = await updateProject({
+          ...project,
+          ...{
+            name,
+            description,
+            contributors,
+          },
+        });
 
-      if (created.success) {
-        closeDialog(created.data.project);
+        if (updated.success) {
+          closeDialog(updated.data.project);
+        } else {
+          setError(updated.message || "Erreur la mise à jour du projet");
+        }
       } else {
-        setError(created.message || "Erreur lors de la création du projet");
+        const created = await createProject({
+          name,
+          description,
+          contributors,
+        });
+
+        if (created.success) {
+          closeDialog(created.data.project);
+        } else {
+          setError(created.message || "Erreur lors de la création du projet");
+        }
       }
+
       setLoading(false);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erreur inconnue";
@@ -71,7 +96,9 @@ export default function CreateProjectDialog({
             ✕
           </button>
 
-          <h1 className={styles.title}>Créer un projet</h1>
+          <h1 className={styles.title}>
+            {project ? "Modifier" : "Créer un projet"}
+          </h1>
 
           <form className={styles.form}>
             <label className={styles.label}>Titre*</label>
@@ -95,17 +122,18 @@ export default function CreateProjectDialog({
               className={styles.select}
               name="contributors"
               id="contributors"
+              multiple
             >
               <option value="">Choisir un ou plusieurs collaborateurs</option>
             </select>
 
             <button
-              type="submit"
+              type="button"
               className={styles.submitButton}
               disabled={!name || !description || loading}
-              onSubmit={createProjectHandler}
+              onClick={createProjectHandler}
             >
-              Ajouter un projet
+              {project ? "Enregistrer" : "Ajouter un projet"}
             </button>
             {error && <span className={styles.error}>{error}</span>}
             {loading && <span className={styles.loading}>Chargement...</span>}

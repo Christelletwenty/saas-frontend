@@ -2,10 +2,12 @@ import { CreateTaskResponse, Task } from "../types/task";
 import { apiFetch } from "./api";
 
 export function createOrUpdateTask(
+  projectId: string,
   payload: Partial<Task> & { assigneesIds?: string[] },
 ): Promise<CreateTaskResponse> {
   const method = payload.id ? "PUT" : "POST";
-  const url = payload.id ? `/tasks/${payload.id}` : "/tasks";
+  let url = `/projects/${projectId}`;
+  url += payload.id ? `/tasks/${payload.id}` : "/tasks";
 
   return apiFetch<CreateTaskResponse>(url, {
     method: method,
@@ -14,4 +16,12 @@ export function createOrUpdateTask(
   });
 }
 
-export function deleteTask(id: string) {}
+export function deleteTaskById(
+  projectId: string,
+  taskId: string,
+): Promise<void> {
+  return apiFetch<void>(`/projects/${projectId}/tasks/${taskId}`, {
+    method: "DELETE",
+    auth: true,
+  });
+}
