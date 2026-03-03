@@ -172,3 +172,48 @@
   object-fit: cover;
   display: block;
 }
+
+/* NOT FOUND */
+.notfoundContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centre verticalement */
+  align-items: center; /* centre horizontalement */
+  text-align: center;
+  background: linear-gradient(135deg, #f5f7fa, #e4e8ef);
+  padding: 20px;
+}
+
+.notfoundTitle {
+  font-size: 80px;
+  margin: 0;
+  color: #222;
+  font-weight: 800;
+}
+
+.notfoundText {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #555;
+}
+
+.notfoundImage {
+  margin-top: 30px;
+}
+
+.notfoundButton {
+  margin-top: 30px;
+  padding: 12px 24px;
+  background-color: #111;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.notfoundButton:hover {
+  background-color: #333;
+  transform: scale(1.05);
+}

@@ -99,7 +99,8 @@ export default function projectsDetail() {
     <main className={styles.page}>
       {/* Header */}
       {!project ? (
-        <div className="empty">
+        <div className={styles.empty}>
+          <p>Aucun projet trouvé</p>
           <img src="/page-not-found.svg" alt="404 not found" />
         </div>
       ) : (
