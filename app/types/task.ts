@@ -4,6 +4,7 @@ import { Project } from "./project";
 
 export type Priority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE" | "CANCELLED";
+export type StatusFilter = "ALL" | TaskStatus;
 
 export type Task = {
   id: string;
@@ -26,12 +27,19 @@ export type Task = {
   }[];
 };
 
-export type Comment = {
+export type TaskComment = {
   id: string;
   content: string;
-  createdAt: string;
-  author: User;
+  createdAt: Date;
+  updatedAt: Date;
+  author: {
+    id: string;
+    email: string;
+    name: string | null;
+  };
 };
 
+export type GetCommentsResponse = ApiSuccess<{ comments: TaskComment[] }>;
 export type CreateTaskResponse = ApiSuccess<{ task: Task }>;
+export type CreateCommentResponse = ApiSuccess<{ comment: TaskComment }>;
 export type AssignedTasksResponse = ApiSuccess<{ tasks: Task[] }>;

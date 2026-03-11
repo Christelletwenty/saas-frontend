@@ -1,4 +1,10 @@
-import { CreateTaskResponse, Task } from "../types/task";
+import {
+  CreateCommentResponse,
+  CreateTaskResponse,
+  GetCommentsResponse,
+  Task,
+  TaskComment,
+} from "../types/task";
 import { apiFetch } from "./api";
 
 export function createOrUpdateTask(
@@ -24,4 +30,32 @@ export function deleteTaskById(
     method: "DELETE",
     auth: true,
   });
+}
+
+export function getCommentsByTaskId(
+  projectId: string,
+  taskId: string,
+): Promise<GetCommentsResponse> {
+  return apiFetch<GetCommentsResponse>(
+    `/projects/${projectId}/tasks/${taskId}/comments`,
+    {
+      method: "GET",
+      auth: true,
+    },
+  );
+}
+
+export function createComment(
+  projectId: string,
+  taskId: string,
+  content: string,
+): Promise<CreateCommentResponse> {
+  return apiFetch<CreateCommentResponse>(
+    `/projects/${projectId}/tasks/${taskId}/comments`,
+    {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ content }),
+    },
+  );
 }

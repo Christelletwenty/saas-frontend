@@ -5,27 +5,35 @@ import Link from "next/link";
 import styles from "./projectDetail.module.css";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Task } from "@/app/types/task";
+import { StatusFilter, Task, TaskStatus } from "@/app/types/task";
 import TaskDialog from "../../dashboard/components/TaskDialog";
 import ListView from "./listView/listView";
 import CalendarView from "./calendarView/calendarView";
 import CreateProjectDialog from "../../dashboard/components/CreateProjectDialog";
 import { deleteTaskById } from "@/app/lib/task-api";
+import DeleteProjectDialog from "../../dashboard/components/DeleteProjectDialog";
+import IaCreateTaskDialog from "../../dashboard/components/IaCreateTaskDialog";
 
 export default function projectsDetail() {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
+  const params = useParams<{
+    projectId: string;
+    id: string;
+  }>();
+  const projectId = params.projectId as string;
   const id = params.id;
   const [query, setQuery] = useState("");
   const [project, setProject] = useState<Project>();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
   const [tasks, setTasks] = useState<Task[]>();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<StatusFilter>("ALL");
   const [modal, setModal] = useState(false);
+  const [iaModal, setIaModal] = useState(false);
   const [isListActive, setIsListActive] = useState<boolean>(true);
   const [createProjectModal, setCreateProjectModal] = useState(false);
+  const [deleteProjectModal, setDeleteProjectModal] = useState(false);
 
   const getUserInitials = (userName: string): string => {
     return userName
@@ -35,18 +43,28 @@ export default function projectsDetail() {
   };
 
   const filteredTasks = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return tasks;
+    if (!tasks) return [];
 
-    return tasks?.filter((t) => {
-      const name = t.title?.toLowerCase() ?? "";
-      const desc = t.description?.toLowerCase() ?? "";
-      const projectName = t.project?.name?.toLowerCase() ?? "";
-      return name.includes(q) || desc.includes(q) || projectName.includes(q);
-    });
-  }, [tasks, query]);
+    const q = query.trim().toLowerCase();
+
+    return tasks
+      .filter((t) => {
+        if (!q) return true;
+
+        const name = t.title?.toLowerCase() ?? "";
+        const desc = t.description?.toLowerCase() ?? "";
+        const projectName = t.project?.name?.toLowerCase() ?? "";
+
+        return name.includes(q) || desc.includes(q) || projectName.includes(q);
+      })
+      .filter((t) => {
+        if (selectedStatus === "ALL") return true;
+        return t.status === selectedStatus;
+      });
+  }, [tasks, query, selectedStatus]);
 
   useEffect(() => {
+    if (!id) return;
     (async () => {
       try {
         setLoading(true);
@@ -63,14 +81,16 @@ export default function projectsDetail() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [id]);
 
   function closeDialog(task?: Task) {
+    console.log(task);
     if (task) {
-      tasks?.push(task);
+      setTasks((prev) => (prev ? [...prev, task] : [task]));
     }
     setSelectedTask(null);
     setModal(false);
+    setIaModal(false);
   }
 
   function closeCreateProjectDialog(p?: Project) {
@@ -78,6 +98,13 @@ export default function projectsDetail() {
       setProject(p);
     }
     setCreateProjectModal(false);
+  }
+
+  function closeDeleteProjectDialog(deleted?: boolean) {
+    if (deleted) {
+      router.push("/projects");
+    }
+    setDeleteProjectModal(false);
   }
 
   async function deleteTask(taskId: string): Promise<void> {
@@ -130,6 +157,17 @@ export default function projectsDetail() {
                   openDialog={createProjectModal}
                   closeDialog={(p) => closeCreateProjectDialog(p)}
                 />
+                <button
+                  onClick={() => setDeleteProjectModal(true)}
+                  className={styles.editLink}
+                >
+                  Supprimer
+                </button>
+                <DeleteProjectDialog
+                  project={project}
+                  openDialog={deleteProjectModal}
+                  closeDialog={(deleted) => closeDeleteProjectDialog(deleted)}
+                />
               </div>
 
               <p className={styles.description}>{project?.description}</p>
@@ -149,9 +187,17 @@ export default function projectsDetail() {
                 task={selectedTask ?? null}
                 project={project}
               />
-              <button className={styles.aiButton} type="button">
+              <button
+                onClick={() => setIaModal(true)}
+                className={styles.aiButton}
+                type="button"
+              >
                 ✦ IA
               </button>
+              <IaCreateTaskDialog
+                openDialog={iaModal}
+                closeDialog={closeDialog}
+              />
             </div>
           </header>
 
@@ -173,7 +219,7 @@ export default function projectsDetail() {
               {project?.members.map((member) => {
                 return (
                   <>
-                    <span className={styles.avatar}>
+                    <span key={member.user.id} className={styles.avatar}>
                       {getUserInitials(member.user.name ?? "")}
                     </span>
                     <span className={styles.namePill}>{member.user.name}</span>
@@ -216,14 +262,18 @@ export default function projectsDetail() {
                 <select
                   className={styles.select}
                   title="Statut"
-                  defaultValue="all"
+                  defaultValue="ALL"
+                  value={selectedStatus}
+                  onChange={(e) =>
+                    setSelectedStatus(e.target.value as StatusFilter)
+                  }
                 >
-                  <option value="all">Statut</option>
-                  <option value="todo">À faire</option>
-                  <option value="doing">En cours</option>
-                  <option value="done">Terminée</option>
+                  <option value="ALL">Toutes</option>
+                  <option value="TODO">A faire</option>
+                  <option value="IN_PROGRESS">En cours</option>
+                  <option value="DONE">Terminé</option>
+                  <option value="CANCELLED">Annulé</option>
                 </select>
-
                 <div className={styles.search}>
                   <input
                     className={styles.searchInput}
@@ -248,6 +298,7 @@ export default function projectsDetail() {
               <>
                 {isListActive ? (
                   <ListView
+                    projectId={project.id}
                     tasks={filteredTasks!}
                     onDelete={(taskId) => deleteTask(taskId)}
                     onEdit={(t) => {

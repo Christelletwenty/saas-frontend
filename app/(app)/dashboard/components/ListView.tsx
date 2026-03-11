@@ -48,9 +48,6 @@ export default function ListView({ tasks }: TaskProps) {
         </div>
       </div>
 
-      {/* TODO : A PARTIR DE LA ON MET DANS UN COMPOSANT  */}
-      {/* TODO : AVEC UN PROPS DE LA LISTE DES TACHES  */}
-      {/* TODO : ET ON CREERA UN AUTRE COMPOSANT POUR LE KANBAN  */}
       {previewTasks.length === 0 ? (
         <p className={styles.empty}>Aucune tâche trouvée.</p>
       ) : (

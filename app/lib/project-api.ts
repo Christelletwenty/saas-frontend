@@ -6,7 +6,7 @@ import {
   GetProjectsResponse,
   Project,
 } from "../types/project";
-import { apiFetch } from "./api";
+import { apiFetch, ApiSuccess } from "./api";
 
 export function createProject(
   payload: CreateProjectBody,
@@ -38,6 +38,13 @@ export function getProjects(): Promise<GetProjectsResponse> {
 export function getProjectById(id: string): Promise<GetProjectResponse> {
   return apiFetch<GetProjectResponse>(`/projects/${id}`, {
     method: "GET",
+    auth: true,
+  });
+}
+
+export function deleteProject(id: string): Promise<ApiSuccess<void>> {
+  return apiFetch<ApiSuccess<void>>(`/projects/${id}`, {
+    method: "DELETE",
     auth: true,
   });
 }

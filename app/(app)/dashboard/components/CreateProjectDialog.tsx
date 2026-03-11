@@ -18,7 +18,6 @@ export default function CreateProjectDialog({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [contributors, setContributors] = useState<string[]>([]);
-  const [save, setSave] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
@@ -70,8 +69,6 @@ export default function CreateProjectDialog({
           setError(created.message || "Erreur lors de la création du projet");
         }
       }
-
-      setLoading(false);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erreur inconnue";
       setError(msg);
@@ -108,15 +105,13 @@ export default function CreateProjectDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-
-            <label className={styles.label}>Description*</label>
+            w<label className={styles.label}>Description*</label>
             <input
               className={styles.input}
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-
             <label className={styles.label}>Contributeurs</label>
             <select
               className={styles.select}
@@ -126,7 +121,6 @@ export default function CreateProjectDialog({
             >
               <option value="">Choisir un ou plusieurs collaborateurs</option>
             </select>
-
             <button
               type="button"
               className={styles.submitButton}

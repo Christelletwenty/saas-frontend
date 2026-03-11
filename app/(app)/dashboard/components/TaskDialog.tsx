@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import styles from "./Dialog.module.css";
-import { createOrUpdateTask } from "@/app/lib/task-api";
-import { Priority, Task, TaskStatus } from "@/app/types/task";
+import { createOrUpdateTask, getCommentsByTaskId } from "@/app/lib/task-api";
+import { Priority, Task, TaskComment, TaskStatus } from "@/app/types/task";
 import { Project } from "@/app/types/project";
 
 type TaskFormState = {
@@ -33,6 +33,9 @@ export default function TaskDialog({
   const [error, setError] = useState<string | null>(null);
   const [projectId, setProjectId] = useState<string | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
+  const [commentsByTaskId, setCommentsByTaskId] = useState<
+    Record<string, TaskComment[]>
+  >({});
 
   const [form, setForm] = useState<TaskFormState>({
     title: "",
@@ -80,6 +83,41 @@ export default function TaskDialog({
     }
   }, [task, openDialog]);
 
+  useEffect(() => {
+    if (!openDialog || !task || !project.id) return;
+
+    let cancelled = false;
+
+    const loadComments = async () => {
+      try {
+        const commentsResponse = await getCommentsByTaskId(project.id, task.id);
+        const comments = commentsResponse.data.comments;
+
+        if (cancelled) return;
+
+        setCommentsByTaskId((prev) => ({
+          ...prev,
+          [task.id]: comments,
+        }));
+      } catch (error) {
+        console.error("Erreur chargement commentaires :", error);
+
+        if (cancelled) return;
+
+        setCommentsByTaskId((prev) => ({
+          ...prev,
+          [task.id]: [],
+        }));
+      }
+    };
+
+    void loadComments();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [openDialog, project.id, task]);
+
   function handleAssigneesChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const ids = Array.from(e.target.selectedOptions).map((o) => o.value);
     setForm((prev) => ({ ...prev, assigneeIds: ids }));
@@ -122,6 +160,13 @@ export default function TaskDialog({
     !!(form as any).title?.trim() &&
     !!(form as any).description?.trim() &&
     !loading;
+
+  const getUserInitials = (userName: string): string => {
+    return userName
+      .split(" ")
+      .map((c) => c[0])
+      .join("");
+  };
 
   {
     return (
@@ -181,6 +226,30 @@ export default function TaskDialog({
                 )
               }
             />
+            <div className={styles.commentsContainer}>
+              <h2 className={styles.label}>Commentaires</h2>
+              {task && (commentsByTaskId[task.id]?.length ?? 0) > 0 ? (
+                commentsByTaskId[task.id]!.map((comment) => (
+                  <div key={comment.id} className={styles.commentRow}>
+                    <div className={styles.avatar}>
+                      {getUserInitials(comment.author?.name ?? "")}
+                    </div>
+
+                    <div className={styles.commentCard}>
+                      <div className={styles.commentTop}>
+                        <span className={styles.commentAuthor}>
+                          {comment.author.name ?? "Utilisateur inconnu"}
+                        </span>
+                      </div>
+
+                      <p className={styles.commentContent}>{comment.content}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className={styles.emptyState}>Aucun commentaire</p>
+              )}
+            </div>
 
             <label className={styles.label}>Assigné à</label>
             <select
