@@ -30,6 +30,7 @@ export default function TaskDialog({
   readonly?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
+  const [isCreating, setIsCreating] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [projectId, setProjectId] = useState<string | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
@@ -61,6 +62,10 @@ export default function TaskDialog({
     setError(null);
 
     if (task) {
+      if (task.id) {
+        setIsCreating(false);
+      }
+
       setForm({
         title: task.title ?? "",
         description: task.description ?? "",
@@ -84,7 +89,7 @@ export default function TaskDialog({
   }, [task, openDialog]);
 
   useEffect(() => {
-    if (!openDialog || !task || !project.id) return;
+    if (!openDialog || !task?.id || !project.id) return;
 
     let cancelled = false;
 
@@ -133,10 +138,17 @@ export default function TaskDialog({
       return;
     }
 
-    const payload = {
+    let payload: Partial<Task> = {
       ...form,
       dueDate: new Date(form.dueDate).toISOString(),
     };
+
+    if (!isCreating) {
+      payload = {
+        ...payload,
+        id: task?.id,
+      };
+    }
 
     try {
       const created = await createOrUpdateTask(projectId, payload);
@@ -186,7 +198,7 @@ export default function TaskDialog({
           <h1 className={styles.title}>
             {readonly
               ? "Détails de la tâche"
-              : task
+              : !isCreating
                 ? "Modifier la tâche"
                 : "Créer une tâche"}
           </h1>
@@ -323,7 +335,7 @@ export default function TaskDialog({
                 disabled={!canSubmit}
                 onClick={createTaskHandler}
               >
-                {task ? "Enregistrer" : "Créer"}
+                {!isCreating ? "Enregistrer" : "Créer"}
               </button>
             )}
             {error && <span className={styles.error}>{error}</span>}

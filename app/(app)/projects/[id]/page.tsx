@@ -83,10 +83,21 @@ export default function projectsDetail() {
     })();
   }, [id]);
 
+  function closeIaDialog(task?: Partial<Task>) {
+    if (task) {
+      {
+        setSelectedTask(task as Task);
+        setModal(true);
+      }
+    }
+  }
+
   function closeDialog(task?: Task) {
     console.log(task);
     if (task) {
-      setTasks((prev) => (prev ? [...prev, task] : [task]));
+      setTasks((prev) =>
+        prev ? [...prev.filter((t) => t.id !== task.id), task] : [task],
+      );
     }
     setSelectedTask(null);
     setModal(false);
@@ -196,7 +207,7 @@ export default function projectsDetail() {
               </button>
               <IaCreateTaskDialog
                 openDialog={iaModal}
-                closeDialog={closeDialog}
+                closeDialog={closeIaDialog}
               />
             </div>
           </header>

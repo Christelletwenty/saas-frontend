@@ -105,7 +105,7 @@ export default function CreateProjectDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            w<label className={styles.label}>Description*</label>
+            <label className={styles.label}>Description*</label>
             <input
               className={styles.input}
               type="text"

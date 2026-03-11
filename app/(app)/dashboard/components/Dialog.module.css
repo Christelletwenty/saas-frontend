@@ -259,6 +259,156 @@
   font-size: 16px;
 }
 
+/* IA task creation */
+
+.dialog {
+  width: min(840px, calc(100vw - 32px));
+  height: min(1120px, calc(100vh - 24px));
+  border: none;
+  border-radius: 18px;
+  padding: 0;
+  background: #f5f5f5;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.container {
+  position: relative;
+  height: 100%;
+  padding: 72px 64px 48px;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+}
+
+.closeButton {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.closeButton:hover {
+  opacity: 0.75;
+}
+
+.title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 34px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.titleIcon {
+  color: #f28a43;
+  font-size: 28px;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.loaderWrapper {
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 88px;
+  padding: 14px 18px 14px 28px;
+  border-radius: 999px;
+  background: #efefef;
+  flex: 0 0 auto;
+}
+
+.commentTextarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1f1f1f;
+  font-family: inherit;
+  height: 28px;
+  padding-top: 8px;
+  overflow: hidden;
+}
+
+.commentTextarea::placeholder {
+  color: #2d2d2d;
+  opacity: 1;
+}
+
+.aiButton {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #d86108;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.aiButton:hover {
+  filter: brightness(0.96);
+}
+
+.aiButton img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #fff;
+  border-bottom-color: #ff3d00;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .dialog {
