@@ -105,8 +105,6 @@ export default function TaskDialog({
           [task.id]: comments,
         }));
       } catch (error) {
-        console.error("Erreur chargement commentaires :", error);
-
         if (cancelled) return;
 
         setCommentsByTaskId((prev) => ({
@@ -152,7 +150,6 @@ export default function TaskDialog({
 
     try {
       const created = await createOrUpdateTask(projectId, payload);
-      console.log("Tâche créé :", created);
 
       if (created.success) {
         closeDialog(created.data.task);

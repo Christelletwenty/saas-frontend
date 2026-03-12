@@ -93,7 +93,6 @@ export default function projectsDetail() {
   }
 
   function closeDialog(task?: Task) {
-    console.log(task);
     if (task) {
       setTasks((prev) =>
         prev ? [...prev.filter((t) => t.id !== task.id), task] : [task],
@@ -222,19 +221,21 @@ export default function projectsDetail() {
             </div>
 
             <div className={styles.contributorsRight}>
-              <span className={`${styles.avatar} ${styles.avatarPrimary}`}>
-                {getUserInitials(project?.owner.name ?? "")}
-              </span>
-              <span className={styles.rolePill}>Propriétaire</span>
+              <div>
+                <span className={`${styles.avatar} ${styles.avatarPrimary}`}>
+                  {getUserInitials(project?.owner.name ?? "")}
+                </span>
+                <span className={styles.rolePill}>Propriétaire</span>
+              </div>
 
               {project?.members.map((member) => {
                 return (
-                  <>
+                  <div>
                     <span key={member.user.id} className={styles.avatar}>
                       {getUserInitials(member.user.name ?? "")}
                     </span>
                     <span className={styles.namePill}>{member.user.name}</span>
-                  </>
+                  </div>
                 );
               })}
             </div>

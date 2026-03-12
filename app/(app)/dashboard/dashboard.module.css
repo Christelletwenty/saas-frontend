@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 1rem;
 }
 
 /* HEADER */
@@ -11,6 +12,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .title {
@@ -70,10 +73,11 @@
 .panel.dashboard {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .panel.dashboard .list {
-  flex: 0 0 33%;
+  flex: 1 0 32%;
 }
 
 .panelHeader {
@@ -81,6 +85,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .panelTitle {
@@ -142,6 +148,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .taskName {

@@ -54,8 +54,6 @@ export default function ListView({
               [task.id]: comments,
             }));
           } catch (error) {
-            console.error("Erreur chargement commentaires :", error);
-
             if (cancelled) return;
 
             setCountsByTaskId((prev) => ({
@@ -93,9 +91,7 @@ export default function ListView({
       }));
 
       setContent("");
-    } catch (error) {
-      console.error("Erreur création commentaire :", error);
-    }
+    } catch (error) {}
   };
 
   const deleteTaskById = (taskId: string) => {

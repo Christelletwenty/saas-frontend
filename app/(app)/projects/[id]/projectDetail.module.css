@@ -12,14 +12,32 @@
    TOP HEADER
 ========================= */
 .topHeader {
-  display: grid;
-  grid-template-columns: 44px 1fr auto;
+  display: flex;
   gap: 14px;
   align-items: start;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .backWrapper {
   padding-top: 2px;
+  flex: 0 0 auto;
+}
+
+.headerMain {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 2px;
+  flex: 1 1 auto;
+}
+
+.headerActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 2px;
+  flex: 0 0 auto;
 }
 
 .backButton {
@@ -34,13 +52,6 @@
   text-decoration: none;
   color: #111827;
   box-shadow: 0 10px 28px rgba(17, 24, 39, 0.04);
-}
-
-.headerMain {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-top: 2px;
 }
 
 .titleRow {
@@ -77,13 +88,6 @@
   max-width: 760px;
 }
 
-.headerActions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding-top: 2px;
-}
-
 .primaryButton {
   background: #111;
   color: #fff;
@@ -115,6 +119,13 @@
 /* =========================
    CONTRIBUTORS BAR
 ========================= */
+@media (max-width: 768px) {
+  .contributorsRight {
+    align-items: flex-start !important;
+    flex-direction: column;
+  }
+}
+
 .contributorsBar {
   background: #f3f4f6;
   border-radius: 12px;
@@ -123,6 +134,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
 .contributorsLeft {
@@ -148,6 +160,12 @@
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.contributorsRight > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Pills / avatars */

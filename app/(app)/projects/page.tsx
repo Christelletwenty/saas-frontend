@@ -32,7 +32,6 @@ export default function projectsPage() {
           setUserInitials(getUserInitials(userRes.data.user.name ?? ""));
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Erreur inconnue";
-          console.error(msg);
           setUserInitials("N/C");
         } finally {
         }

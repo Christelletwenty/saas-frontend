@@ -75,7 +75,6 @@ function Account() {
         setUserInitials(getUserInitials(userRes.data.user.name ?? ""));
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Erreur inconnue";
-        console.error(msg);
         setUserInitials("N/C");
       } finally {
       }
@@ -91,22 +90,67 @@ function Account() {
 
 export default function AppHeader() {
   const pathname = usePathname();
-  return (
-    <header className={styles.header}>
-      <div className={styles.inner}>
-        <Link href="/" className={styles.brand} aria-label="Abricot - Accueil">
-          <Image
-            src="/abricot-logo.svg"
-            alt="Abricot"
-            width={120}
-            height={28}
-            priority
-          />
-        </Link>
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-        <nav className={styles.nav} aria-label="Navigation principale">
+  return (
+    <>
+      <header className={styles.header}>
+        <div className={styles.inner}>
+          <button
+            className={`${styles.burger} ${isMobileMenuOpen ? styles.active : ""}`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          ></button>
           <Link
             href="/"
+            className={styles.brand}
+            aria-label="Abricot - Accueil"
+          >
+            <Image
+              src="/abricot-logo.svg"
+              alt="Abricot"
+              width={120}
+              height={28}
+              priority
+            />
+          </Link>
+
+          <nav className={styles.nav} aria-label="Navigation principale">
+            <Link
+              href="/"
+              className={`${styles.navItem} ${pathname === "/dashboard" ? styles.active : ""}`}
+            >
+              <span className={styles.navIcon}>
+                <IconGrid />
+              </span>
+              <button>Tableau de bord</button>
+            </Link>
+
+            <Link
+              href="/projects"
+              className={`${styles.navItem} ${pathname.includes("/projects") ? styles.active : ""}`}
+            >
+              <span className={styles.navIcon}>
+                <IconFolder />
+              </span>
+              <button>Projets</button>
+            </Link>
+          </nav>
+
+          <Link
+            href="/profile"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`${styles.navItem} ${styles.account}`}
+          >
+            <Account />
+          </Link>
+        </div>
+      </header>
+
+      {isMobileMenuOpen && (
+        <div className={styles.mobileMenu}>
+          <Link
+            href="/"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={`${styles.navItem} ${pathname === "/dashboard" ? styles.active : ""}`}
           >
             <span className={styles.navIcon}>
@@ -114,9 +158,9 @@ export default function AppHeader() {
             </span>
             <button>Tableau de bord</button>
           </Link>
-
           <Link
             href="/projects"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={`${styles.navItem} ${pathname.includes("/projects") ? styles.active : ""}`}
           >
             <span className={styles.navIcon}>
@@ -124,12 +168,8 @@ export default function AppHeader() {
             </span>
             <button>Projets</button>
           </Link>
-        </nav>
-
-        <Link href="/profile" className={`${styles.navItem} ${styles.account}`}>
-          <Account />
-        </Link>
-      </div>
-    </header>
+        </div>
+      )}
+    </>
   );
 }

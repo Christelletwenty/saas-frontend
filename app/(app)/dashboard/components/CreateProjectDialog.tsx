@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { Project } from "@/app/types/project";
 
 import styles from "./Dialog.module.css";
+import { User } from "@/app/types/auth";
+import { getUsers } from "@/app/lib/user-api";
 
 export default function CreateProjectDialog({
   openDialog,
@@ -18,10 +20,30 @@ export default function CreateProjectDialog({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [contributors, setContributors] = useState<string[]>([]);
+  const [possibleContributors, setPossibleContributors] = useState<
+    Partial<User>[]
+  >([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const contributors = await getUsers();
+
+        setPossibleContributors(contributors);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Erreur inconnue";
+        setError(msg);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
   useEffect(() => {
     if (openDialog) {
       ref.current?.showModal();
@@ -117,10 +139,32 @@ export default function CreateProjectDialog({
               className={styles.select}
               name="contributors"
               id="contributors"
-              multiple
+              onChange={(e) => {
+                setContributors([...contributors, e.target.value]);
+              }}
             >
               <option value="">Choisir un ou plusieurs collaborateurs</option>
+              {possibleContributors
+                .filter((c) => !contributors.includes(c.email!))
+                .map((c) => (
+                  <option value={c.email} key={c.email}>
+                    {c.name}
+                  </option>
+                ))}
             </select>
+            <div className={styles.contributors}>
+              {contributors.map((c) => (
+                <button
+                  className={styles.contributor}
+                  key={`contrib-${c}`}
+                  onClick={() =>
+                    setContributors(contributors.filter((con) => con !== c))
+                  }
+                >
+                  {c} <span>x</span>
+                </button>
+              ))}
+            </div>
             <button
               type="button"
               className={styles.submitButton}
