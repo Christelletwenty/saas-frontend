@@ -28,11 +28,14 @@ export default function ListView({
   const [content, setContent] = useState("");
 
   useEffect(() => {
+    // Si aucune tâche n'existe, inutile de lancer les appels API.
     if (!tasks || tasks.length === 0) return;
 
     let cancelled = false;
 
     const loadComments = async () => {
+      // Promise.all permet de charger les commentaires de toutes les tâches en parallèle.
+      // C'est plus rapide que de les charger une par une.
       await Promise.all(
         tasks.map(async (task) => {
           try {
@@ -44,11 +47,13 @@ export default function ListView({
 
             if (cancelled) return;
 
+            // On met à jour le nombre de commentaires pour cette tâche.
             setCountsByTaskId((prev) => ({
               ...prev,
               [task.id]: comments.length,
             }));
 
+            // On stocke les commentaires récupérés pour cette tâche.
             setCommentsByTaskId((prev) => ({
               ...prev,
               [task.id]: comments,
@@ -72,6 +77,7 @@ export default function ListView({
     };
   }, [projectId, tasks]);
 
+  // Empêche l'envoi d'un commentaire vide ou composé uniquement d'espaces.
   const handleCreateComment = async (taskId: string) => {
     if (!content.trim()) return;
 
@@ -79,23 +85,26 @@ export default function ListView({
       const response = await createComment(projectId, taskId, content);
 
       const newComment = response.data.comment;
-
+      // on ajoute directement le nouveau commentaire dans le state
       setCommentsByTaskId((prev) => ({
         ...prev,
         [taskId]: [...(prev[taskId] ?? []), newComment],
       }));
 
+      // On incrémente aussi immédiatement le compteur de commentaires.
       setCountsByTaskId((prev) => ({
         ...prev,
         [taskId]: (prev[taskId] ?? 0) + 1,
       }));
 
+      // On vide le champ texte après création du commentaire.
       setContent("");
     } catch (error) {}
   };
 
   const deleteTaskById = (taskId: string) => {
     onDelete(taskId);
+    // Ferme le menu d'action après suppression.
     setMenuOpenId(null);
   };
 
@@ -115,7 +124,7 @@ export default function ListView({
     <div className={styles.tasksList}>
       {tasks?.map((task) => {
         return (
-          <article className={styles.taskCard}>
+          <article key={task.id} className={styles.taskCard}>
             <div className={styles.taskTop}>
               <div className={styles.taskTitleRow}>
                 <h3 className={styles.taskTitle}>
@@ -165,7 +174,7 @@ export default function ListView({
                 {task?.assignees?.map((assignee) => {
                   const assigneeName = assignee.user.name;
                   return (
-                    <div className={styles.assignees}>
+                    <div key={assignee.user.id} className={styles.assignees}>
                       <span className={styles.avatar}>
                         {getUserInitials(assigneeName ?? "")}
                       </span>

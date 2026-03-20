@@ -43,18 +43,21 @@ export default function projectsDetail() {
   };
 
   const filteredTasks = useMemo(() => {
+    // Si aucune tâche n'est chargée, on retourne un tableau vide
     if (!tasks) return [];
 
+    // On nettoie la recherche utilisateur
     const q = query.trim().toLowerCase();
 
     return tasks
       .filter((t) => {
         if (!q) return true;
+        // Si la recherche est vide, on garde toutes les tâches.
 
         const name = t.title?.toLowerCase() ?? "";
         const desc = t.description?.toLowerCase() ?? "";
         const projectName = t.project?.name?.toLowerCase() ?? "";
-
+        // La tâche est gardée si la recherche correspond à son titre, sa description ou le nom du projet associé.
         return name.includes(q) || desc.includes(q) || projectName.includes(q);
       })
       .filter((t) => {
@@ -64,15 +67,19 @@ export default function projectsDetail() {
   }, [tasks, query, selectedStatus]);
 
   useEffect(() => {
+    // Sécurité : si l'id n'existe pas, on arrête tout de suite.
     if (!id) return;
     (async () => {
       try {
         setLoading(true);
         const res = await getProjectById(id);
+        // On extrait le projet depuis la réponse.
         const p = res.data.project;
 
         setProject(p);
+        // On stocke le projet dans le state
         setTasks(p.tasks);
+        // On stocke les tâches du projet pour les manipuler localement
       } catch (err) {
         // si jamais ça arrive (token invalide), AuthGate va aussi redirect
         const msg = err instanceof Error ? err.message : "Erreur inconnue";
@@ -84,6 +91,7 @@ export default function projectsDetail() {
   }, [id]);
 
   function closeIaDialog(task?: Partial<Task>) {
+    setIaModal(false);
     if (task) {
       {
         setSelectedTask(task as Task);
@@ -95,11 +103,16 @@ export default function projectsDetail() {
   function closeDialog(task?: Task) {
     if (task) {
       setTasks((prev) =>
+        // Si une tâche est renvoyée à la fermeture de la modale :
+        // - on enlève l'ancienne version si elle existe déjà
+        // - on ajoute la nouvelle version
         prev ? [...prev.filter((t) => t.id !== task.id), task] : [task],
       );
     }
+    // On nettoie la tâche sélectionnée après fermeture.
     setSelectedTask(null);
     setModal(false);
+    // Sécurité supplémentaire : on s'assure aussi que la modale IA est fermée.
     setIaModal(false);
   }
 
@@ -107,6 +120,7 @@ export default function projectsDetail() {
     if (p) {
       setProject(p);
     }
+    // Si le projet a été mis à jour dans la modale on remplace les données du projet affiché.
     setCreateProjectModal(false);
   }
 
@@ -114,6 +128,7 @@ export default function projectsDetail() {
     if (deleted) {
       router.push("/projects");
     }
+    // Si le projet a bien été supprimé on redirige l'utilisateur vers la liste des projets.
     setDeleteProjectModal(false);
   }
 
@@ -123,11 +138,20 @@ export default function projectsDetail() {
         await deleteTaskById(project.id, taskId);
 
         const prev = tasks ?? [];
+        // Mise à jour côté front :
+        // on enlève la tâche supprimée de l'affichage local
+        // sans avoir besoin de recharger toute la page.
         setTasks(prev.filter((t) => t.id !== taskId));
       } catch (err) {
-        // setError() // todo
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Impossible de supprimer la tâche.";
+
+        setError(message);
       }
     } else {
+      // on évite d'appeler l'API si aucun projet n'est chargé.
       setError("Pas de projet sélectionné ?");
     }
   }
@@ -138,7 +162,7 @@ export default function projectsDetail() {
       {!project ? (
         <div className={styles.empty}>
           <p>Aucun projet trouvé</p>
-          <img src="/page-not-found.svg" alt="404 not found" />
+          <img src="/page-not-found.svg" alt="404 not found" loading="lazy" />
         </div>
       ) : (
         <>
@@ -230,8 +254,8 @@ export default function projectsDetail() {
 
               {project?.members.map((member) => {
                 return (
-                  <div>
-                    <span key={member.user.id} className={styles.avatar}>
+                  <div key={member.user.id}>
+                    <span className={styles.avatar}>
                       {getUserInitials(member.user.name ?? "")}
                     </span>
                     <span className={styles.namePill}>{member.user.name}</span>
@@ -274,7 +298,6 @@ export default function projectsDetail() {
                 <select
                   className={styles.select}
                   title="Statut"
-                  defaultValue="ALL"
                   value={selectedStatus}
                   onChange={(e) =>
                     setSelectedStatus(e.target.value as StatusFilter)

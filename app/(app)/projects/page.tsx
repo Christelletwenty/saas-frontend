@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { getProfile } from "@/app/lib/auth-api";
 import CreateProjectDialog from "../dashboard/components/CreateProjectDialog";
 
-export default function projectsPage() {
+export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,11 +29,12 @@ export default function projectsPage() {
       (async () => {
         try {
           const userRes = await getProfile();
+          // on récupère le nom et on calcule les initiales
           setUserInitials(getUserInitials(userRes.data.user.name ?? ""));
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Erreur inconnue";
+          // si erreur on affiche N/C (non connu)
           setUserInitials("N/C");
-        } finally {
         }
       })();
     }, []);
@@ -46,6 +47,7 @@ export default function projectsPage() {
         setError(null);
 
         const response = await getProjects();
+        // récupération de la liste des projets
         const p = response.data.projects;
 
         setProjects(p);
@@ -59,7 +61,9 @@ export default function projectsPage() {
   }, []);
 
   function closeDialog(project?: Project) {
+    // si un projet a été créé dans la modal
     if (project) {
+      // on l'ajoute dans la liste actuelle
       projects.push(project);
     }
     setModal(false);

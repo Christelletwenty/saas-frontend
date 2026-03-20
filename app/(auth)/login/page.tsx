@@ -12,13 +12,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
+    e.preventDefault(); // Empêche le rechargement complet de la page lors du submit HTML
+    setError(null); // Réinitialise l'erreur précédente avant une nouvelle tentative
+    setIsLoading(true); // Active l'état de chargement
 
     try {
+      // Appelle l'API avec les données du formulaire
       const loginResponse = await login(form);
 
+      // Si l'API indique un échec, on affiche le message d'erreur
       if (!loginResponse.success) {
         setError(loginResponse.message ?? "Une erreur est survenue !");
         return;
@@ -27,6 +29,8 @@ export default function LoginPage() {
       const data = loginResponse.data;
 
       setToken(data.token);
+      // Force le rafraîchissement de la route pour mettre à jour
+      // l'affichage avec le nouvel état d'authentification
       router.replace("/");
       router.refresh();
     } catch (err) {
@@ -41,7 +45,12 @@ export default function LoginPage() {
   return (
     <div className="login">
       <div className="login__left">
-        <img className="login__logo" src="abricot-logo.svg" alt="Abricot" />
+        <img
+          className="login__logo"
+          src="abricot-logo.svg"
+          alt="Abricot"
+          loading="lazy"
+        />
 
         <div className="login__form__container">
           <h1 className="login__title">Connexion</h1>

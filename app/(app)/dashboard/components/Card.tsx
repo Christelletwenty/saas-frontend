@@ -6,13 +6,17 @@ import TaskDialog from "./TaskDialog";
 import { useState } from "react";
 import { Project } from "@/app/types/project";
 
+// Définition du type des props du composant Card.
 type TaskProps = {
   task: Task;
 };
 
+// Fonction utilitaire pour formater une date.
 function formatDate(date: string | null): string {
   if (!date) return "—";
+  // Création d'un objet Date JavaScript
   const d = new Date(date);
+  // Formatage de la date au format français
   return d.toLocaleDateString("fr-FR", {
     year: "numeric",
     month: "short",

@@ -24,6 +24,7 @@ export default function DeleteProjectDialog({
     if (openDialog) {
       ref.current?.showModal();
       if (project) {
+        // réinitialise la confirmation de suppression lorsque le projet change ou que la fenêtre s'ouvre
         setConfirmDelete(false);
       }
     } else {
@@ -33,6 +34,7 @@ export default function DeleteProjectDialog({
 
   async function deleteProjectHandler() {
     if (!project) {
+      // sécurité : si aucun projet n'est fourni
       setError("Projet introuvable");
       return;
     }

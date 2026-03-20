@@ -25,7 +25,7 @@ export default function KanbanView({ tasks }: KanbanProps) {
             {tasks
               .filter((task) => task.status === "TODO")
               .map((task) => (
-                <Card task={task} />
+                <Card key={task.id} task={task} />
               ))}
           </div>
           <div className={styles.list}>
@@ -38,7 +38,7 @@ export default function KanbanView({ tasks }: KanbanProps) {
             {tasks
               .filter((task) => task.status === "IN_PROGRESS")
               .map((task) => (
-                <Card task={task} />
+                <Card key={task.id} task={task} />
               ))}
           </div>
           <div className={styles.list}>
@@ -51,7 +51,7 @@ export default function KanbanView({ tasks }: KanbanProps) {
             {tasks
               .filter((task) => task.status === "DONE")
               .map((task) => (
-                <Card task={task} />
+                <Card key={task.id} task={task} />
               ))}
           </div>
         </>

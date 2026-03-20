@@ -11,10 +11,14 @@ type TaskProps = {
 export default function ListView({ tasks }: TaskProps) {
   const [query, setQuery] = useState("");
 
+  // useMemo permet d'éviter de recalculer le filtrage à chaque rendu
   const filteredTasks = useMemo(() => {
+    // On nettoie la recherche et on la met en minuscule
     const q = query.trim().toLowerCase();
+    // Si la recherche est vide on retourne directement toutes les tâches
     if (!q) return tasks;
-
+    // Sinon on filtre les tâches en vérifiant si le titre, la description ou le nom du projet contiennent la recherche
+    // Le "?. " évite les erreurs si une valeur est undefined
     return tasks.filter((t) => {
       const name = t.title?.toLowerCase() ?? "";
       const desc = t.description?.toLowerCase() ?? "";
@@ -23,10 +27,8 @@ export default function ListView({ tasks }: TaskProps) {
     });
   }, [tasks, query]);
 
-  const previewTasks = useMemo(
-    () => filteredTasks, //.slice(0, 6),
-    [filteredTasks],
-  );
+  // Ici useMemo est utilisé simplement pour mémoriser filteredTasks
+  const previewTasks = useMemo(() => filteredTasks, [filteredTasks]);
 
   return (
     <section className={styles.panel}>
@@ -53,7 +55,7 @@ export default function ListView({ tasks }: TaskProps) {
       ) : (
         <div className={styles.list}>
           {previewTasks.map((task) => (
-            <Card task={task} />
+            <Card key={task.id} task={task} />
           ))}
         </div>
       )}

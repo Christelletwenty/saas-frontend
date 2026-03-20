@@ -7,6 +7,8 @@ import { setToken } from "../../lib/auth";
 import { login, register } from "../../lib/auth-api";
 import { HttpError } from "../../lib/api";
 
+// On reprend les champs nécessaires à l'inscription
+// et on ajoute confirmPassword pour la vérification côté interface.
 type RegisterFormState = RegisterPayload & {
   confirmPassword: string;
 };
@@ -26,7 +28,8 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
 
-    //Validation
+    // Vérification simple côté client :
+    // on s'assure que le mot de passe et sa confirmation correspondent
     if (form.password !== form.confirmPassword) {
       setError("Le mot de passe ne correspond pas.");
       return;
@@ -35,37 +38,39 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
+      // On retire confirmPassword avant d'envoyer les données à l'API,
+      // car ce champ sert uniquement à la validation côté front.
       const { confirmPassword, ...payload } = form;
-      //On register
       const regResponse = await register(payload);
 
+      // Si la connexion échoue ou que le token manque,
+      // on informe l'utilisateur.
       if (!regResponse.success) {
         setError(regResponse.message ?? "Une erreur est survenue");
         return;
       }
 
+      // Données renvoyées après inscription.
       const data = regResponse.data;
 
-      //Le backend renvoie un token = on est register
       if (data.token) {
         setToken(data.token);
         router.replace("/");
         router.refresh();
         return;
       }
-      //Je comprend pas
       const loginResp = await login({
         email: payload.email,
         password: payload.password,
       });
 
-      // Dans les faits ça devrait jamais arriver mais sait-on jamais
       if (!loginResp.success || !loginResp.data.token) {
         setError("Compte créé, mais connexion impossible (token manquant).");
         return;
       }
 
       setToken(loginResp.data.token);
+      // Puis on redirige l'utilisateur.
       router.replace("/");
       router.refresh();
     } catch (err) {
@@ -92,7 +97,12 @@ export default function RegisterPage() {
   return (
     <div className="login">
       <div className="login__left">
-        <img className="login__logo" src="abricot-logo.svg" alt="Abricot" />
+        <img
+          className="login__logo"
+          src="abricot-logo.svg"
+          alt="Abricot"
+          loading="lazy"
+        />
 
         <div className="login__form__container">
           <h1 className="login__title">Inscription</h1>

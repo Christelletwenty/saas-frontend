@@ -28,6 +28,7 @@ export default function CreateProjectDialog({
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
+    // Fonction auto-exécutée asynchrone car useEffect ne peut pas être async directement.
     (async () => {
       try {
         setLoading(true);
@@ -36,6 +37,7 @@ export default function CreateProjectDialog({
         const contributors = await getUsers();
 
         setPossibleContributors(contributors);
+        // On stocke ces utilisateurs dans le state pour ensuite les afficher comme contributeurs possibles.
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Erreur inconnue";
         setError(msg);
@@ -48,9 +50,12 @@ export default function CreateProjectDialog({
     if (openDialog) {
       ref.current?.showModal();
       if (project) {
+        // Si un projet est fourni, on pré-remplit le champ nom.
         setName(project.name);
         setDescription(project.description ?? "");
+        // On pré-remplit la description. ?? "" permet de mettre une chaîne vide si la description est absente.
         setContributors(project.members.map((m) => m.id));
+        // On récupère les IDs des membres du projet existant
       }
     } else {
       ref.current?.close();
@@ -64,13 +69,16 @@ export default function CreateProjectDialog({
 
     try {
       if (project) {
+        // Si project existe, on est en mode modification.
         const updated = await updateProject({
+          // On repart de l'objet projet existant
           ...project,
           ...{
             name,
             description,
             contributors,
           },
+          // On écrase avec les nouvelles valeurs du formulaire.
         });
 
         if (updated.success) {
@@ -79,6 +87,7 @@ export default function CreateProjectDialog({
           setError(updated.message || "Erreur la mise à jour du projet");
         }
       } else {
+        // Mode création
         const created = await createProject({
           name,
           description,

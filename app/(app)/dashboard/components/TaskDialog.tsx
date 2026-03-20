@@ -7,6 +7,7 @@ import { createOrUpdateTask, getCommentsByTaskId } from "@/app/lib/task-api";
 import { Priority, Task, TaskComment, TaskStatus } from "@/app/types/task";
 import { Project } from "@/app/types/project";
 
+// Type dédié à l'état du formulaire.
 type TaskFormState = {
   title: string;
   description: string;
@@ -61,6 +62,7 @@ export default function TaskDialog({
 
     setError(null);
 
+    // Si une tâche existe, on passe en mode édition.
     if (task) {
       if (task.id) {
         setIsCreating(false);
@@ -75,6 +77,7 @@ export default function TaskDialog({
         priority: task.priority,
         status: task.status,
         assigneeIds: task.assignees?.map((a) => a.user.id) ?? [],
+        // On transforme les assignés en simple tableau d'ids pour le formulaire
       });
     } else {
       setForm({
@@ -85,11 +88,16 @@ export default function TaskDialog({
         status: "TODO",
         assigneeIds: [],
       });
+      // Si aucune tâche n'est fournie, on est en création on remet le formulaire à vide avec ses valeurs par défaut.
     }
   }, [task, openDialog]);
 
   useEffect(() => {
     if (!openDialog || !task?.id || !project.id) return;
+    // On ne charge les commentaires que si :
+    // - la modale est ouverte
+    // - une tâche existe
+    // - le projet possède un id
 
     let cancelled = false;
 
@@ -104,6 +112,7 @@ export default function TaskDialog({
           ...prev,
           [task.id]: comments,
         }));
+        // On stocke les commentaires de la tâche courante sans écraser les éventuels commentaires déjà chargés pour d'autres tâches.
       } catch (error) {
         if (cancelled) return;
 
@@ -124,6 +133,7 @@ export default function TaskDialog({
   function handleAssigneesChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const ids = Array.from(e.target.selectedOptions).map((o) => o.value);
     setForm((prev) => ({ ...prev, assigneeIds: ids }));
+    // On récupère toutes les options sélectionnées dans le <select multiple> puis on met à jour le formulaire avec la liste des ids.
   }
 
   async function createTaskHandler(e: React.FormEvent) {
@@ -132,6 +142,7 @@ export default function TaskDialog({
     setError(null);
 
     if (!projectId) {
+      // Vérification de sécurité : impossible de créer ou modifier une tâche sans projet.
       setError("Le projectId ne peut pas être null");
       return;
     }
@@ -139,6 +150,7 @@ export default function TaskDialog({
     let payload: Partial<Task> = {
       ...form,
       dueDate: new Date(form.dueDate).toISOString(),
+      // La date est convertie en format ISO pour être cohérente côté backend.
     };
 
     if (!isCreating) {
@@ -146,6 +158,7 @@ export default function TaskDialog({
         ...payload,
         id: task?.id,
       };
+      // En mode édition, on ajoute l'id de la tâche au payload pour que l'API sache quelle tâche mettre à jour.
     }
 
     try {
@@ -155,6 +168,8 @@ export default function TaskDialog({
         closeDialog(created.data.task);
       } else {
         setError(created.message || "Erreur lors de la création du projet");
+        // Si succès : on ferme la modale en renvoyant la tâche au parent.
+        // Sinon : on affiche un message d'erreur.
       }
       setLoading(false);
     } catch (err) {
@@ -169,6 +184,9 @@ export default function TaskDialog({
     !!(form as any).title?.trim() &&
     !!(form as any).description?.trim() &&
     !loading;
+  // Variable qui indique si le formulaire peut être soumis :
+  // - titre non vide
+  // - description non vide
 
   const getUserInitials = (userName: string): string => {
     return userName

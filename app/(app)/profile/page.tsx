@@ -47,10 +47,13 @@ export default function ProfilePage() {
           ...f,
           name: u.name ?? "",
           email: u.email,
+          // On pré-remplit le formulaire avec les données récupérées. ?? "" évite d'avoir undefined dans le champ name.
         }));
       } catch {
         // si jamais ça arrive (token invalide), AuthGate va aussi redirect
         clearToken();
+        // Si le token est invalide ou expiré, on le supprime.
+        // C'est une bonne sécurité pour éviter de garder une session cassée.
       } finally {
         setLoading(false);
       }
@@ -69,6 +72,7 @@ export default function ProfilePage() {
       form.currentPassword || form.newPassword || form.confirmNewPassword,
     );
   }, [form.currentPassword, form.newPassword, form.confirmNewPassword]);
+  // Vérifie si l'utilisateur a commencé à remplir la partie mot de passe.
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -76,8 +80,10 @@ export default function ProfilePage() {
     setMessage(null);
 
     if (!user) return;
+    // Sécurité : si l'utilisateur n'est pas chargé, on ne continue pas
 
     if (passwordSectionTouched) {
+      // Si l'utilisateur veut modifier son mot de passe, on vérifie que tous les champs nécessaires sont remplis
       if (
         !form.currentPassword ||
         !form.newPassword ||
@@ -88,6 +94,7 @@ export default function ProfilePage() {
       }
       if (form.newPassword !== form.confirmNewPassword) {
         setError("Les nouveaux mots de passe ne correspondent pas.");
+        // Vérification très importante : on évite d'envoyer une demande incohérente au backend
         return;
       }
     }
@@ -110,12 +117,14 @@ export default function ProfilePage() {
 
         const updated = res.data.user;
         setUser(updated);
+        // On met à jour le state user avec les nouvelles données renvoyées par le backend
 
         setForm((f) => ({
           ...f,
           name: updated.name ?? "",
           email: updated.email,
         }));
+        // On vide les champs du mot de passe après succès pour éviter de garder des données sensibles à l'écran
 
         profileMsg = res.message ?? "Profil mis à jour.";
       }
@@ -147,11 +156,13 @@ export default function ProfilePage() {
   }
 
   function logout() {
+    // On supprime le token d'authentification localement et on redirige vers la page de login.
     clearToken();
     window.location.href = "/login";
   }
 
   if (loading) {
+    // Si jamais aucun utilisateur n'est disponible après chargement, on n'affiche rien. Cela évite un rendu cassé.
     return (
       <main>
         <h1>Mon compte</h1>

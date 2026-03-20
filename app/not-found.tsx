@@ -8,7 +8,7 @@ export default function NotFound() {
       <p className={"notfoundText"}>Oups… Cette page n’existe pas.</p>
 
       <div className={"notfoundImage"}>
-        <img src="/not-found.svg" alt="Page not found" />
+        <img src="/not-found.svg" alt="Page not found" loading="lazy" />
       </div>
 
       <Link href="/" className={"notfoundButton"}>
