@@ -108,11 +108,12 @@ export default function RegisterPage() {
           <h1 className="login__title">Inscription</h1>
 
           <form onSubmit={onSubmit} className="login__form">
-            <label className="login__label">
+            <label className="login__label" htmlFor="email">
               Email
               <input
                 className="login__input"
                 type="email"
+                id="email"
                 value={form.email ?? ""}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, email: e.target.value }))
@@ -120,11 +121,12 @@ export default function RegisterPage() {
                 required
               />
             </label>
-            <label className="login__label">
+            <label className="login__label" htmlFor="name">
               Nom
               <input
                 className="login__input"
                 type="text"
+                id="name"
                 value={form.name}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, name: e.target.value }))
@@ -132,11 +134,12 @@ export default function RegisterPage() {
                 required
               />
             </label>
-            <label className="login__label">
+            <label className="login__label" htmlFor="password">
               Mot de passe
               <input
                 className="login__input"
                 type="password"
+                id="password"
                 value={form.password ?? ""}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, password: e.target.value }))
@@ -145,11 +148,12 @@ export default function RegisterPage() {
                 minLength={6}
               />
             </label>
-            <label className="login__label">
+            <label className="login__label" htmlFor="confirmPassword">
               Confirmez le mot de passe
               <input
                 className="login__input"
                 type="password"
+                id="confirmPassword"
                 value={form.confirmPassword ?? ""}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, confirmPassword: e.target.value }))

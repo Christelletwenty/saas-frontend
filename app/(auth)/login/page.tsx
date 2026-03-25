@@ -56,11 +56,12 @@ export default function LoginPage() {
           <h1 className="login__title">Connexion</h1>
 
           <form onSubmit={onSubmit} className="login__form">
-            <label className="login__label">
+            <label className="login__label" htmlFor="email">
               Email
               <input
                 className="login__input"
                 type="email"
+                id="email"
                 value={form.email}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, email: e.target.value }))
@@ -69,11 +70,12 @@ export default function LoginPage() {
               />
             </label>
 
-            <label className="login__label">
+            <label className="login__label" htmlFor="password">
               Mot de passe
               <input
                 className="login__input"
                 type="password"
+                id="password"
                 value={form.password}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, password: e.target.value }))

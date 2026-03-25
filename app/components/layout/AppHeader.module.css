@@ -88,6 +88,7 @@
 }
 
 .burger {
+  color: transparent;
   position: relative;
   width: 32px;
   height: 3px;

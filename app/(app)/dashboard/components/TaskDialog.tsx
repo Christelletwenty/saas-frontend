@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import styles from "./Dialog.module.css";
 import { createOrUpdateTask, getCommentsByTaskId } from "@/app/lib/task-api";
@@ -38,6 +38,8 @@ export default function TaskDialog({
   const [commentsByTaskId, setCommentsByTaskId] = useState<
     Record<string, TaskComment[]>
   >({});
+
+  const uid = useId();
 
   const [form, setForm] = useState<TaskFormState>({
     title: "",
@@ -219,33 +221,48 @@ export default function TaskDialog({
           </h1>
 
           <form className={styles.form}>
-            <label className={styles.label}>Titre*</label>
+            <label htmlFor={`taskDialogTitle-${uid}`} className={styles.label}>
+              Titre*
+            </label>
             <input
               disabled={readonly}
               className={styles.input}
               type="text"
+              id={`taskDialogTitle-${uid}`}
               value={form.title}
               onChange={(e) =>
                 setForm((prev) => ({ ...prev, title: e.target.value }))
               }
             />
 
-            <label className={styles.label}>Description*</label>
+            <label
+              htmlFor={`taskDialogDescription-${uid}`}
+              className={styles.label}
+            >
+              Description*
+            </label>
             <input
               disabled={readonly}
               className={styles.input}
               type="text"
+              id={`taskDialogDescription-${uid}`}
               value={form.description}
               onChange={(e) =>
                 setForm((prev) => ({ ...prev, description: e.target.value }))
               }
             />
 
-            <label className={styles.label}>Échéance</label>
+            <label
+              htmlFor={`taskDialogDueDate-${uid}`}
+              className={styles.label}
+            >
+              Échéance
+            </label>
             <input
               disabled={readonly}
               className={styles.input}
               type="date"
+              id={`taskDialogDueDate-${uid}`}
               value={form.dueDate}
               onChange={(e) =>
                 setForm(
@@ -278,10 +295,16 @@ export default function TaskDialog({
               )}
             </div>
 
-            <label className={styles.label}>Assigné à</label>
+            <label
+              htmlFor={`taskDialogAssignee-${uid}`}
+              className={styles.label}
+            >
+              Assigné à
+            </label>
             <select
               className={styles.select}
               multiple
+              id={`taskDialogAssignee-${uid}`}
               value={((form as any).assigneeIds ?? []) as string[]}
               onChange={handleAssigneesChange}
             >
@@ -299,12 +322,16 @@ export default function TaskDialog({
               role="radiogroup"
               aria-label="Statut"
             >
-              <label className={styles.statusPill}>
+              <label
+                className={styles.statusPill}
+                htmlFor={`statusTodo-${uid}`}
+              >
                 <input
                   disabled={readonly}
                   type="radio"
                   name="status"
                   value="TODO"
+                  id={`statusTodo-${uid}`}
                   checked={((form as any).status as TaskStatus) === "TODO"}
                   onChange={() =>
                     setForm((p) => ({ ...p, status: "TODO" }) as any)
@@ -313,11 +340,15 @@ export default function TaskDialog({
                 <span>À faire</span>
               </label>
 
-              <label className={styles.statusPill}>
+              <label
+                className={styles.statusPill}
+                htmlFor={`statusInProgress-${uid}`}
+              >
                 <input
                   disabled={readonly}
                   type="radio"
                   name="status"
+                  id={`statusInProgress-${uid}`}
                   value="IN_PROGRESS"
                   checked={
                     ((form as any).status as TaskStatus) === "IN_PROGRESS"
@@ -329,11 +360,15 @@ export default function TaskDialog({
                 <span>En cours</span>
               </label>
 
-              <label className={styles.statusPill}>
+              <label
+                className={styles.statusPill}
+                htmlFor={`statusDone-${uid}`}
+              >
                 <input
                   disabled={readonly}
                   type="radio"
                   name="status"
+                  id={`statusDone-${uid}`}
                   value="DONE"
                   checked={((form as any).status as TaskStatus) === "DONE"}
                   onChange={() =>

@@ -99,7 +99,9 @@ export default function AppHeader() {
           <button
             className={`${styles.burger} ${isMobileMenuOpen ? styles.active : ""}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          ></button>
+          >
+            burger menu
+          </button>
           <Link
             href="/"
             className={styles.brand}

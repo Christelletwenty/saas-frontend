@@ -1,7 +1,7 @@
 "use client";
 
 import { createProject, updateProject } from "@/app/lib/project-api";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Project } from "@/app/types/project";
 
 import styles from "./Dialog.module.css";
@@ -26,6 +26,9 @@ export default function CreateProjectDialog({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
+
+  const uniqid = useId();
+  console.log("uniqid", uniqid);
 
   useEffect(() => {
     // Fonction auto-exécutée asynchrone car useEffect ne peut pas être async directement.
@@ -129,25 +132,42 @@ export default function CreateProjectDialog({
           </h1>
 
           <form className={styles.form}>
-            <label className={styles.label}>Titre*</label>
+            <label
+              htmlFor={`createProjectTitle-${uniqid}`}
+              className={styles.label}
+            >
+              Titre*
+            </label>
             <input
               className={styles.input}
               type="text"
+              id={`createProjectTitle-${uniqid}`}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <label className={styles.label}>Description*</label>
+            <label
+              htmlFor={`createProjectDescription-${uniqid}`}
+              className={styles.label}
+            >
+              Description*
+            </label>
             <input
               className={styles.input}
               type="text"
+              id={`createProjectDescription-${uniqid}`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-            <label className={styles.label}>Contributeurs</label>
+            <label
+              htmlFor={`createProjectContributors-${uniqid}`}
+              className={styles.label}
+            >
+              Contributeurs
+            </label>
             <select
               className={styles.select}
               name="contributors"
-              id="contributors"
+              id={`createProjectContributors-${uniqid}`}
               onChange={(e) => {
                 setContributors([...contributors, e.target.value]);
               }}
@@ -166,6 +186,7 @@ export default function CreateProjectDialog({
                 <button
                   className={styles.contributor}
                   key={`contrib-${c}`}
+                  type="button"
                   onClick={() =>
                     setContributors(contributors.filter((con) => con !== c))
                   }

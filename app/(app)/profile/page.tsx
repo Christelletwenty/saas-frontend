@@ -192,21 +192,23 @@ export default function ProfilePage() {
         <p className={styles.subtitle}>{user.name ?? "—"}</p>
 
         <form onSubmit={onSubmit} className={styles.form}>
-          <label className={styles.label}>
+          <label className={styles.label} htmlFor="name">
             Nom
             <input
               className={styles.input}
               type="text"
+              id="name"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             />
           </label>
 
-          <label className={styles.label}>
+          <label className={styles.label} htmlFor="email">
             Email
             <input
               className={styles.input}
               type="email"
+              id="email"
               value={form.email}
               onChange={(e) =>
                 setForm((f) => ({ ...f, email: e.target.value }))
@@ -215,11 +217,12 @@ export default function ProfilePage() {
             />
           </label>
 
-          <label className={styles.label}>
+          <label className={styles.label} htmlFor="currentPassword">
             Mot de passe actuel
             <input
               className={styles.input}
               type="password"
+              id="currentPassword"
               value={form.currentPassword}
               onChange={(e) =>
                 setForm((f) => ({ ...f, currentPassword: e.target.value }))
@@ -227,11 +230,12 @@ export default function ProfilePage() {
             />
           </label>
 
-          <label className={styles.label}>
+          <label className={styles.label} htmlFor="newPassword">
             Nouveau mot de passe
             <input
               className={styles.input}
               type="password"
+              id="newPassword"
               value={form.newPassword}
               onChange={(e) =>
                 setForm((f) => ({ ...f, newPassword: e.target.value }))
@@ -239,11 +243,12 @@ export default function ProfilePage() {
             />
           </label>
 
-          <label className={styles.label}>
+          <label className={styles.label} htmlFor="confirmNewPassword">
             Confirmer le nouveau mot de passe
             <input
               className={styles.input}
               type="password"
+              id="confirmNewPassword"
               value={form.confirmNewPassword}
               onChange={(e) =>
                 setForm((f) => ({ ...f, confirmNewPassword: e.target.value }))

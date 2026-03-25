@@ -39,9 +39,13 @@ export default function ListView({ tasks }: TaskProps) {
         </div>
 
         <div className={styles.search}>
+          <label htmlFor="search" className="sr-only">
+            Rechercher une tâche
+          </label>
           <input
             className={styles.searchInput}
             type="text"
+            id="search"
             placeholder="Rechercher une tâche"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
